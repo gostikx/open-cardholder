@@ -27,10 +27,15 @@ class HomeScreen extends ConsumerWidget {
               itemCount: cards.length,
               itemBuilder: (context, index) {
                 final card = cards[index];
-                return CardPanel(
-                  cardLogo: card.logo ?? '',
-                  cardTitle: card.title,
-                  cardDescription: card.description,
+                return InkWell(
+                  onTap: () {
+                    GoRouter.of(context).push('/card-detail/${card.id}');
+                  },
+                  child: CardPanel(
+                    cardLogo: card.logo ?? '',
+                    cardTitle: card.title,
+                    cardDescription: card.description,
+                  ),
                 );
               },
             ),
