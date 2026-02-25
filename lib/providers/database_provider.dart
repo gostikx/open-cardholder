@@ -40,6 +40,7 @@ class AddCardNotifier extends StateNotifier<AsyncValue<void>> {
         id: isar.cardModels.autoIncrement(),
         title: title,
         description: description,
+        code: '',
         logo: logo,
       );
 

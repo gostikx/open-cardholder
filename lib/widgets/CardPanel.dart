@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:open_cardholder/widgets/LeadingWidget.dart';
 
 class CardPanel extends StatelessWidget {
   const CardPanel({
@@ -16,15 +17,10 @@ class CardPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget leadingWidget;
 
-    // Common circular container properties
-    const double containerSize = 80.0;
-    const Color backgroundColor = Colors.blue;
-    const double fontSize = 28.0;
-
     if (cardLogo.isNotEmpty) {
       leadingWidget = Container(
-        height: containerSize,
-        width: containerSize,
+        height: 80.0,
+        width: 80.0,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           image: DecorationImage(
@@ -34,35 +30,7 @@ class CardPanel extends StatelessWidget {
         ),
       );
     } else {
-      // Extract first letters from cardTitle
-      String initials = '';
-      if (cardTitle.isNotEmpty) {
-        final words = cardTitle.split(' ');
-        for (final word in words) {
-          if (word.isNotEmpty) {
-            initials += word[0].toUpperCase();
-          }
-        }
-      }
-
-      leadingWidget = Container(
-        height: containerSize,
-        width: containerSize,
-        decoration: const BoxDecoration(
-          color: backgroundColor,
-          shape: BoxShape.circle,
-        ),
-        child: Center(
-          child: Text(
-            initials.isNotEmpty ? initials : '?',
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: fontSize,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-      );
+      leadingWidget = LeadingWidget(title: cardTitle);
     }
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),

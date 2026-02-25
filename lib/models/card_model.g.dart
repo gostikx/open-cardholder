@@ -21,6 +21,10 @@ const CardModelSchema = IsarGeneratedSchema(
     embedded: false,
     properties: [
       IsarPropertySchema(
+        name: 'logo',
+        type: IsarType.string,
+      ),
+      IsarPropertySchema(
         name: 'title',
         type: IsarType.string,
       ),
@@ -29,7 +33,7 @@ const CardModelSchema = IsarGeneratedSchema(
         type: IsarType.string,
       ),
       IsarPropertySchema(
-        name: 'logo',
+        name: 'code',
         type: IsarType.string,
       ),
     ],
@@ -45,16 +49,17 @@ const CardModelSchema = IsarGeneratedSchema(
 
 @isarProtected
 int serializeCardModel(IsarWriter writer, CardModel object) {
-  IsarCore.writeString(writer, 1, object.title);
-  IsarCore.writeString(writer, 2, object.description);
   {
     final value = object.logo;
     if (value == null) {
-      IsarCore.writeNull(writer, 3);
+      IsarCore.writeNull(writer, 1);
     } else {
-      IsarCore.writeString(writer, 3, value);
+      IsarCore.writeString(writer, 1, value);
     }
   }
+  IsarCore.writeString(writer, 2, object.title);
+  IsarCore.writeString(writer, 3, object.description);
+  IsarCore.writeString(writer, 4, object.code);
   return object.id;
 }
 
@@ -62,17 +67,20 @@ int serializeCardModel(IsarWriter writer, CardModel object) {
 CardModel deserializeCardModel(IsarReader reader) {
   final int _id;
   _id = IsarCore.readId(reader);
-  final String _title;
-  _title = IsarCore.readString(reader, 1) ?? '';
-  final String _description;
-  _description = IsarCore.readString(reader, 2) ?? '';
   final String? _logo;
-  _logo = IsarCore.readString(reader, 3);
+  _logo = IsarCore.readString(reader, 1);
+  final String _title;
+  _title = IsarCore.readString(reader, 2) ?? '';
+  final String _description;
+  _description = IsarCore.readString(reader, 3) ?? '';
+  final String _code;
+  _code = IsarCore.readString(reader, 4) ?? '';
   final object = CardModel(
     id: _id,
+    logo: _logo,
     title: _title,
     description: _description,
-    logo: _logo,
+    code: _code,
   );
   return object;
 }
@@ -83,11 +91,13 @@ dynamic deserializeCardModelProp(IsarReader reader, int property) {
     case 0:
       return IsarCore.readId(reader);
     case 1:
-      return IsarCore.readString(reader, 1) ?? '';
+      return IsarCore.readString(reader, 1);
     case 2:
       return IsarCore.readString(reader, 2) ?? '';
     case 3:
-      return IsarCore.readString(reader, 3);
+      return IsarCore.readString(reader, 3) ?? '';
+    case 4:
+      return IsarCore.readString(reader, 4) ?? '';
     default:
       throw ArgumentError('Unknown property: $property');
   }
@@ -96,9 +106,10 @@ dynamic deserializeCardModelProp(IsarReader reader, int property) {
 sealed class _CardModelUpdate {
   bool call({
     required int id,
+    String? logo,
     String? title,
     String? description,
-    String? logo,
+    String? code,
   });
 }
 
@@ -110,16 +121,18 @@ class _CardModelUpdateImpl implements _CardModelUpdate {
   @override
   bool call({
     required int id,
+    Object? logo = ignore,
     Object? title = ignore,
     Object? description = ignore,
-    Object? logo = ignore,
+    Object? code = ignore,
   }) {
     return collection.updateProperties([
           id
         ], {
-          if (title != ignore) 1: title as String?,
-          if (description != ignore) 2: description as String?,
-          if (logo != ignore) 3: logo as String?,
+          if (logo != ignore) 1: logo as String?,
+          if (title != ignore) 2: title as String?,
+          if (description != ignore) 3: description as String?,
+          if (code != ignore) 4: code as String?,
         }) >
         0;
   }
@@ -128,9 +141,10 @@ class _CardModelUpdateImpl implements _CardModelUpdate {
 sealed class _CardModelUpdateAll {
   int call({
     required List<int> id,
+    String? logo,
     String? title,
     String? description,
-    String? logo,
+    String? code,
   });
 }
 
@@ -142,14 +156,16 @@ class _CardModelUpdateAllImpl implements _CardModelUpdateAll {
   @override
   int call({
     required List<int> id,
+    Object? logo = ignore,
     Object? title = ignore,
     Object? description = ignore,
-    Object? logo = ignore,
+    Object? code = ignore,
   }) {
     return collection.updateProperties(id, {
-      if (title != ignore) 1: title as String?,
-      if (description != ignore) 2: description as String?,
-      if (logo != ignore) 3: logo as String?,
+      if (logo != ignore) 1: logo as String?,
+      if (title != ignore) 2: title as String?,
+      if (description != ignore) 3: description as String?,
+      if (code != ignore) 4: code as String?,
     });
   }
 }
@@ -162,9 +178,10 @@ extension CardModelUpdate on IsarCollection<int, CardModel> {
 
 sealed class _CardModelQueryUpdate {
   int call({
+    String? logo,
     String? title,
     String? description,
-    String? logo,
+    String? code,
   });
 }
 
@@ -176,14 +193,16 @@ class _CardModelQueryUpdateImpl implements _CardModelQueryUpdate {
 
   @override
   int call({
+    Object? logo = ignore,
     Object? title = ignore,
     Object? description = ignore,
-    Object? logo = ignore,
+    Object? code = ignore,
   }) {
     return query.updateProperties(limit: limit, {
-      if (title != ignore) 1: title as String?,
-      if (description != ignore) 2: description as String?,
-      if (logo != ignore) 3: logo as String?,
+      if (logo != ignore) 1: logo as String?,
+      if (title != ignore) 2: title as String?,
+      if (description != ignore) 3: description as String?,
+      if (code != ignore) 4: code as String?,
     });
   }
 }
@@ -203,16 +222,18 @@ class _CardModelQueryBuilderUpdateImpl implements _CardModelQueryUpdate {
 
   @override
   int call({
+    Object? logo = ignore,
     Object? title = ignore,
     Object? description = ignore,
-    Object? logo = ignore,
+    Object? code = ignore,
   }) {
     final q = query.build();
     try {
       return q.updateProperties(limit: limit, {
-        if (title != ignore) 1: title as String?,
-        if (description != ignore) 2: description as String?,
-        if (logo != ignore) 3: logo as String?,
+        if (logo != ignore) 1: logo as String?,
+        if (title != ignore) 2: title as String?,
+        if (description != ignore) 3: description as String?,
+        if (code != ignore) 4: code as String?,
       });
     } finally {
       q.close();
@@ -311,6 +332,192 @@ extension CardModelQueryFilter
     });
   }
 
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> logoIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const IsNullCondition(property: 1));
+    });
+  }
+
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> logoIsNotNull() {
+    return QueryBuilder.apply(not(), (query) {
+      return query.addFilterCondition(const IsNullCondition(property: 1));
+    });
+  }
+
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> logoEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        EqualCondition(
+          property: 1,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> logoGreaterThan(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterCondition(
+          property: 1,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition>
+      logoGreaterThanOrEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterOrEqualCondition(
+          property: 1,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> logoLessThan(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessCondition(
+          property: 1,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition>
+      logoLessThanOrEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessOrEqualCondition(
+          property: 1,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> logoBetween(
+    String? lower,
+    String? upper, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        BetweenCondition(
+          property: 1,
+          lower: lower,
+          upper: upper,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> logoStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        StartsWithCondition(
+          property: 1,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> logoEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        EndsWithCondition(
+          property: 1,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> logoContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        ContainsCondition(
+          property: 1,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> logoMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        MatchesCondition(
+          property: 1,
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> logoIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const EqualCondition(
+          property: 1,
+          value: '',
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> logoIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const GreaterCondition(
+          property: 1,
+          value: '',
+        ),
+      );
+    });
+  }
+
   QueryBuilder<CardModel, CardModel, QAfterFilterCondition> titleEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -318,7 +525,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         EqualCondition(
-          property: 1,
+          property: 2,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -333,7 +540,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterCondition(
-          property: 1,
+          property: 2,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -349,7 +556,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterOrEqualCondition(
-          property: 1,
+          property: 2,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -364,7 +571,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessCondition(
-          property: 1,
+          property: 2,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -380,7 +587,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessOrEqualCondition(
-          property: 1,
+          property: 2,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -396,7 +603,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         BetweenCondition(
-          property: 1,
+          property: 2,
           lower: lower,
           upper: upper,
           caseSensitive: caseSensitive,
@@ -412,7 +619,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         StartsWithCondition(
-          property: 1,
+          property: 2,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -427,7 +634,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         EndsWithCondition(
-          property: 1,
+          property: 2,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -441,7 +648,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         ContainsCondition(
-          property: 1,
+          property: 2,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -455,7 +662,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         MatchesCondition(
-          property: 1,
+          property: 2,
           wildcard: pattern,
           caseSensitive: caseSensitive,
         ),
@@ -467,7 +674,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         const EqualCondition(
-          property: 1,
+          property: 2,
           value: '',
         ),
       );
@@ -478,7 +685,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         const GreaterCondition(
-          property: 1,
+          property: 2,
           value: '',
         ),
       );
@@ -492,7 +699,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         EqualCondition(
-          property: 2,
+          property: 3,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -508,7 +715,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterCondition(
-          property: 2,
+          property: 3,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -524,7 +731,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterOrEqualCondition(
-          property: 2,
+          property: 3,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -539,7 +746,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessCondition(
-          property: 2,
+          property: 3,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -555,7 +762,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessOrEqualCondition(
-          property: 2,
+          property: 3,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -571,7 +778,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         BetweenCondition(
-          property: 2,
+          property: 3,
           lower: lower,
           upper: upper,
           caseSensitive: caseSensitive,
@@ -588,7 +795,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         StartsWithCondition(
-          property: 2,
+          property: 3,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -603,7 +810,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         EndsWithCondition(
-          property: 2,
+          property: 3,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -617,7 +824,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         ContainsCondition(
-          property: 2,
+          property: 3,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -631,7 +838,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         MatchesCondition(
-          property: 2,
+          property: 3,
           wildcard: pattern,
           caseSensitive: caseSensitive,
         ),
@@ -644,7 +851,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         const EqualCondition(
-          property: 2,
+          property: 3,
           value: '',
         ),
       );
@@ -656,33 +863,21 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         const GreaterCondition(
-          property: 2,
+          property: 3,
           value: '',
         ),
       );
     });
   }
 
-  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> logoIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const IsNullCondition(property: 3));
-    });
-  }
-
-  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> logoIsNotNull() {
-    return QueryBuilder.apply(not(), (query) {
-      return query.addFilterCondition(const IsNullCondition(property: 3));
-    });
-  }
-
-  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> logoEqualTo(
-    String? value, {
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> codeEqualTo(
+    String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         EqualCondition(
-          property: 3,
+          property: 4,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -690,14 +885,14 @@ extension CardModelQueryFilter
     });
   }
 
-  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> logoGreaterThan(
-    String? value, {
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> codeGreaterThan(
+    String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterCondition(
-          property: 3,
+          property: 4,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -706,14 +901,14 @@ extension CardModelQueryFilter
   }
 
   QueryBuilder<CardModel, CardModel, QAfterFilterCondition>
-      logoGreaterThanOrEqualTo(
-    String? value, {
+      codeGreaterThanOrEqualTo(
+    String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterOrEqualCondition(
-          property: 3,
+          property: 4,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -721,14 +916,14 @@ extension CardModelQueryFilter
     });
   }
 
-  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> logoLessThan(
-    String? value, {
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> codeLessThan(
+    String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessCondition(
-          property: 3,
+          property: 4,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -737,14 +932,14 @@ extension CardModelQueryFilter
   }
 
   QueryBuilder<CardModel, CardModel, QAfterFilterCondition>
-      logoLessThanOrEqualTo(
-    String? value, {
+      codeLessThanOrEqualTo(
+    String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessOrEqualCondition(
-          property: 3,
+          property: 4,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -752,15 +947,15 @@ extension CardModelQueryFilter
     });
   }
 
-  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> logoBetween(
-    String? lower,
-    String? upper, {
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> codeBetween(
+    String lower,
+    String upper, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         BetweenCondition(
-          property: 3,
+          property: 4,
           lower: lower,
           upper: upper,
           caseSensitive: caseSensitive,
@@ -769,14 +964,14 @@ extension CardModelQueryFilter
     });
   }
 
-  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> logoStartsWith(
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> codeStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         StartsWithCondition(
-          property: 3,
+          property: 4,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -784,14 +979,14 @@ extension CardModelQueryFilter
     });
   }
 
-  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> logoEndsWith(
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> codeEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         EndsWithCondition(
-          property: 3,
+          property: 4,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -799,13 +994,13 @@ extension CardModelQueryFilter
     });
   }
 
-  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> logoContains(
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> codeContains(
       String value,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         ContainsCondition(
-          property: 3,
+          property: 4,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -813,13 +1008,13 @@ extension CardModelQueryFilter
     });
   }
 
-  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> logoMatches(
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> codeMatches(
       String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         MatchesCondition(
-          property: 3,
+          property: 4,
           wildcard: pattern,
           caseSensitive: caseSensitive,
         ),
@@ -827,22 +1022,22 @@ extension CardModelQueryFilter
     });
   }
 
-  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> logoIsEmpty() {
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> codeIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         const EqualCondition(
-          property: 3,
+          property: 4,
           value: '',
         ),
       );
     });
   }
 
-  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> logoIsNotEmpty() {
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> codeIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         const GreaterCondition(
-          property: 3,
+          property: 4,
           value: '',
         ),
       );
@@ -866,7 +1061,7 @@ extension CardModelQuerySortBy on QueryBuilder<CardModel, CardModel, QSortBy> {
     });
   }
 
-  QueryBuilder<CardModel, CardModel, QAfterSortBy> sortByTitle(
+  QueryBuilder<CardModel, CardModel, QAfterSortBy> sortByLogo(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(
@@ -876,11 +1071,32 @@ extension CardModelQuerySortBy on QueryBuilder<CardModel, CardModel, QSortBy> {
     });
   }
 
-  QueryBuilder<CardModel, CardModel, QAfterSortBy> sortByTitleDesc(
+  QueryBuilder<CardModel, CardModel, QAfterSortBy> sortByLogoDesc(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(
         1,
+        sort: Sort.desc,
+        caseSensitive: caseSensitive,
+      );
+    });
+  }
+
+  QueryBuilder<CardModel, CardModel, QAfterSortBy> sortByTitle(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(
+        2,
+        caseSensitive: caseSensitive,
+      );
+    });
+  }
+
+  QueryBuilder<CardModel, CardModel, QAfterSortBy> sortByTitleDesc(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(
+        2,
         sort: Sort.desc,
         caseSensitive: caseSensitive,
       );
@@ -891,7 +1107,7 @@ extension CardModelQuerySortBy on QueryBuilder<CardModel, CardModel, QSortBy> {
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(
-        2,
+        3,
         caseSensitive: caseSensitive,
       );
     });
@@ -901,28 +1117,28 @@ extension CardModelQuerySortBy on QueryBuilder<CardModel, CardModel, QSortBy> {
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(
-        2,
+        3,
         sort: Sort.desc,
         caseSensitive: caseSensitive,
       );
     });
   }
 
-  QueryBuilder<CardModel, CardModel, QAfterSortBy> sortByLogo(
+  QueryBuilder<CardModel, CardModel, QAfterSortBy> sortByCode(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(
-        3,
+        4,
         caseSensitive: caseSensitive,
       );
     });
   }
 
-  QueryBuilder<CardModel, CardModel, QAfterSortBy> sortByLogoDesc(
+  QueryBuilder<CardModel, CardModel, QAfterSortBy> sortByCodeDesc(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(
-        3,
+        4,
         sort: Sort.desc,
         caseSensitive: caseSensitive,
       );
@@ -944,69 +1160,90 @@ extension CardModelQuerySortThenBy
     });
   }
 
-  QueryBuilder<CardModel, CardModel, QAfterSortBy> thenByTitle(
+  QueryBuilder<CardModel, CardModel, QAfterSortBy> thenByLogo(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(1, caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<CardModel, CardModel, QAfterSortBy> thenByTitleDesc(
+  QueryBuilder<CardModel, CardModel, QAfterSortBy> thenByLogoDesc(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(1, sort: Sort.desc, caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<CardModel, CardModel, QAfterSortBy> thenByDescription(
+  QueryBuilder<CardModel, CardModel, QAfterSortBy> thenByTitle(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(2, caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<CardModel, CardModel, QAfterSortBy> thenByDescriptionDesc(
+  QueryBuilder<CardModel, CardModel, QAfterSortBy> thenByTitleDesc(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(2, sort: Sort.desc, caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<CardModel, CardModel, QAfterSortBy> thenByLogo(
+  QueryBuilder<CardModel, CardModel, QAfterSortBy> thenByDescription(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(3, caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<CardModel, CardModel, QAfterSortBy> thenByLogoDesc(
+  QueryBuilder<CardModel, CardModel, QAfterSortBy> thenByDescriptionDesc(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(3, sort: Sort.desc, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<CardModel, CardModel, QAfterSortBy> thenByCode(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(4, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<CardModel, CardModel, QAfterSortBy> thenByCodeDesc(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(4, sort: Sort.desc, caseSensitive: caseSensitive);
     });
   }
 }
 
 extension CardModelQueryWhereDistinct
     on QueryBuilder<CardModel, CardModel, QDistinct> {
-  QueryBuilder<CardModel, CardModel, QAfterDistinct> distinctByTitle(
+  QueryBuilder<CardModel, CardModel, QAfterDistinct> distinctByLogo(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(1, caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<CardModel, CardModel, QAfterDistinct> distinctByDescription(
+  QueryBuilder<CardModel, CardModel, QAfterDistinct> distinctByTitle(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(2, caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<CardModel, CardModel, QAfterDistinct> distinctByLogo(
+  QueryBuilder<CardModel, CardModel, QAfterDistinct> distinctByDescription(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(3, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<CardModel, CardModel, QAfterDistinct> distinctByCode(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(4, caseSensitive: caseSensitive);
     });
   }
 }
@@ -1019,21 +1256,27 @@ extension CardModelQueryProperty1
     });
   }
 
-  QueryBuilder<CardModel, String, QAfterProperty> titleProperty() {
+  QueryBuilder<CardModel, String?, QAfterProperty> logoProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(1);
     });
   }
 
-  QueryBuilder<CardModel, String, QAfterProperty> descriptionProperty() {
+  QueryBuilder<CardModel, String, QAfterProperty> titleProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(2);
     });
   }
 
-  QueryBuilder<CardModel, String?, QAfterProperty> logoProperty() {
+  QueryBuilder<CardModel, String, QAfterProperty> descriptionProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(3);
+    });
+  }
+
+  QueryBuilder<CardModel, String, QAfterProperty> codeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(4);
     });
   }
 }
@@ -1046,21 +1289,27 @@ extension CardModelQueryProperty2<R>
     });
   }
 
-  QueryBuilder<CardModel, (R, String), QAfterProperty> titleProperty() {
+  QueryBuilder<CardModel, (R, String?), QAfterProperty> logoProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(1);
     });
   }
 
-  QueryBuilder<CardModel, (R, String), QAfterProperty> descriptionProperty() {
+  QueryBuilder<CardModel, (R, String), QAfterProperty> titleProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(2);
     });
   }
 
-  QueryBuilder<CardModel, (R, String?), QAfterProperty> logoProperty() {
+  QueryBuilder<CardModel, (R, String), QAfterProperty> descriptionProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(3);
+    });
+  }
+
+  QueryBuilder<CardModel, (R, String), QAfterProperty> codeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(4);
     });
   }
 }
@@ -1073,21 +1322,27 @@ extension CardModelQueryProperty3<R1, R2>
     });
   }
 
-  QueryBuilder<CardModel, (R1, R2, String), QOperations> titleProperty() {
+  QueryBuilder<CardModel, (R1, R2, String?), QOperations> logoProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(1);
     });
   }
 
-  QueryBuilder<CardModel, (R1, R2, String), QOperations> descriptionProperty() {
+  QueryBuilder<CardModel, (R1, R2, String), QOperations> titleProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(2);
     });
   }
 
-  QueryBuilder<CardModel, (R1, R2, String?), QOperations> logoProperty() {
+  QueryBuilder<CardModel, (R1, R2, String), QOperations> descriptionProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(3);
+    });
+  }
+
+  QueryBuilder<CardModel, (R1, R2, String), QOperations> codeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(4);
     });
   }
 }
