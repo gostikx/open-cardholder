@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:open_cardholder/fake_data/fake_cards.dart';
 import 'package:open_cardholder/widgets/CardPanel.dart';
 
@@ -23,8 +24,10 @@ class HomeScreen extends StatelessWidget {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        tooltip: 'Increment',
+        onPressed: () {
+          GoRouter.of(context).push('/add-new-card');
+        },
+        tooltip: 'Add new card',
         child: const Icon(Icons.add),
       ),
     );
