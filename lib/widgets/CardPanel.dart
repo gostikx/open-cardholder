@@ -26,6 +26,7 @@ class CardPanel extends StatelessWidget {
     } else {
       leadingWidget = LeadingWidget(title: card.title);
     }
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: Container(
@@ -58,11 +59,11 @@ class CardPanel extends StatelessWidget {
               color: Colors.black87,
             ),
           ),
-          trailing: const Icon(
-            Icons.chevron_right,
-            color: Colors.black38,
-            size: 24.0,
-          ),
+          // trailing: const Icon(
+          //   Icons.chevron_right,
+          //   color: Colors.black38,
+          //   size: 24.0,
+          // ),
         ),
       ),
     );

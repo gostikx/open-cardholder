@@ -15,9 +15,7 @@ class LeadingWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Common circular container properties
-    // const double containerSize = 30.0;
     const Color backgroundColor = Colors.blue;
-    // const double fontSize = 18.0;
 
     String initials = '';
     if (title.isNotEmpty) {

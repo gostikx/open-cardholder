@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:open_cardholder/models/card_model.dart';
 import 'package:open_cardholder/providers/database_provider.dart';
 import 'package:barcode_widget/barcode_widget.dart';
+import 'package:open_cardholder/widgets/barcode_type_dropdown.dart';
 
 class UpdateCardScreen extends ConsumerWidget {
   final int cardId;
@@ -77,18 +78,8 @@ class UpdateCardScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
           // Dropdown for barcode type
-          DropdownButtonFormField<BarcodeType>(
+          BarcodeTypeDropdown(
             value: _selectedType,
-            decoration: const InputDecoration(
-              labelText: 'Barcode Type',
-              border: OutlineInputBorder(),
-            ),
-            items: BarcodeType.values.map((type) {
-              return DropdownMenuItem(
-                value: type,
-                child: Text(type.toString().split('.').last),
-              );
-            }).toList(),
             onChanged: (BarcodeType? newValue) {
               _selectedType = newValue!;
             },

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:open_cardholder/providers/database_provider.dart';
 import 'package:barcode_widget/barcode_widget.dart';
+import 'package:open_cardholder/widgets/barcode_type_dropdown.dart';
 
 class CreateNewCard extends ConsumerStatefulWidget {
   const CreateNewCard({super.key});
@@ -67,18 +68,8 @@ class _CreateNewCardState extends ConsumerState<CreateNewCard> {
           // Dropdown for barcode type
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: DropdownButtonFormField<BarcodeType>(
+            child: BarcodeTypeDropdown(
               value: _selectedType,
-              decoration: const InputDecoration(
-                labelText: 'Barcode Type',
-                border: OutlineInputBorder(),
-              ),
-              items: BarcodeType.values.map((type) {
-                return DropdownMenuItem(
-                  value: type,
-                  child: Text(type.toString().split('.').last),
-                );
-              }).toList(),
               onChanged: (BarcodeType? newValue) {
                 setState(() {
                   _selectedType = newValue!;
