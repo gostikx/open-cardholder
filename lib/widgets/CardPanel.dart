@@ -27,11 +27,18 @@ class CardPanel extends StatelessWidget {
       leadingWidget = LeadingWidget(title: card.title);
     }
 
+    print(card.toJson());
+    int colorInt = Colors.grey[100]!.toARGB32();
+    if (card.coverColor != null && card.coverColor.runtimeType == int) {
+      colorInt = card.coverColor!;
+    }
+    Color color = Color(colorInt);
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: color,
           borderRadius: BorderRadius.circular(12.0),
           boxShadow: [
             BoxShadow(

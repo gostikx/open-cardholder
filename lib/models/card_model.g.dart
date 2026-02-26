@@ -21,6 +21,14 @@ const CardModelSchema = IsarGeneratedSchema(
     embedded: false,
     properties: [
       IsarPropertySchema(
+        name: 'coverImage',
+        type: IsarType.string,
+      ),
+      IsarPropertySchema(
+        name: 'coverColor',
+        type: IsarType.long,
+      ),
+      IsarPropertySchema(
         name: 'logo',
         type: IsarType.string,
       ),
@@ -50,16 +58,25 @@ const CardModelSchema = IsarGeneratedSchema(
 @isarProtected
 int serializeCardModel(IsarWriter writer, CardModel object) {
   {
-    final value = object.logo;
+    final value = object.coverImage;
     if (value == null) {
       IsarCore.writeNull(writer, 1);
     } else {
       IsarCore.writeString(writer, 1, value);
     }
   }
-  IsarCore.writeString(writer, 2, object.title);
-  IsarCore.writeString(writer, 3, object.code);
-  IsarCore.writeString(writer, 4, object.type);
+  IsarCore.writeLong(writer, 2, object.coverColor ?? -9223372036854775808);
+  {
+    final value = object.logo;
+    if (value == null) {
+      IsarCore.writeNull(writer, 3);
+    } else {
+      IsarCore.writeString(writer, 3, value);
+    }
+  }
+  IsarCore.writeString(writer, 4, object.title);
+  IsarCore.writeString(writer, 5, object.code);
+  IsarCore.writeString(writer, 6, object.type);
   return object.id;
 }
 
@@ -67,16 +84,29 @@ int serializeCardModel(IsarWriter writer, CardModel object) {
 CardModel deserializeCardModel(IsarReader reader) {
   final int _id;
   _id = IsarCore.readId(reader);
+  final String? _coverImage;
+  _coverImage = IsarCore.readString(reader, 1);
+  final int? _coverColor;
+  {
+    final value = IsarCore.readLong(reader, 2);
+    if (value == -9223372036854775808) {
+      _coverColor = null;
+    } else {
+      _coverColor = value;
+    }
+  }
   final String? _logo;
-  _logo = IsarCore.readString(reader, 1);
+  _logo = IsarCore.readString(reader, 3);
   final String _title;
-  _title = IsarCore.readString(reader, 2) ?? '';
+  _title = IsarCore.readString(reader, 4) ?? '';
   final String _code;
-  _code = IsarCore.readString(reader, 3) ?? '';
+  _code = IsarCore.readString(reader, 5) ?? '';
   final String _type;
-  _type = IsarCore.readString(reader, 4) ?? '';
+  _type = IsarCore.readString(reader, 6) ?? '';
   final object = CardModel(
     id: _id,
+    coverImage: _coverImage,
+    coverColor: _coverColor,
     logo: _logo,
     title: _title,
     code: _code,
@@ -93,11 +123,22 @@ dynamic deserializeCardModelProp(IsarReader reader, int property) {
     case 1:
       return IsarCore.readString(reader, 1);
     case 2:
-      return IsarCore.readString(reader, 2) ?? '';
+      {
+        final value = IsarCore.readLong(reader, 2);
+        if (value == -9223372036854775808) {
+          return null;
+        } else {
+          return value;
+        }
+      }
     case 3:
-      return IsarCore.readString(reader, 3) ?? '';
+      return IsarCore.readString(reader, 3);
     case 4:
       return IsarCore.readString(reader, 4) ?? '';
+    case 5:
+      return IsarCore.readString(reader, 5) ?? '';
+    case 6:
+      return IsarCore.readString(reader, 6) ?? '';
     default:
       throw ArgumentError('Unknown property: $property');
   }
@@ -106,6 +147,8 @@ dynamic deserializeCardModelProp(IsarReader reader, int property) {
 sealed class _CardModelUpdate {
   bool call({
     required int id,
+    String? coverImage,
+    int? coverColor,
     String? logo,
     String? title,
     String? code,
@@ -121,6 +164,8 @@ class _CardModelUpdateImpl implements _CardModelUpdate {
   @override
   bool call({
     required int id,
+    Object? coverImage = ignore,
+    Object? coverColor = ignore,
     Object? logo = ignore,
     Object? title = ignore,
     Object? code = ignore,
@@ -129,10 +174,12 @@ class _CardModelUpdateImpl implements _CardModelUpdate {
     return collection.updateProperties([
           id
         ], {
-          if (logo != ignore) 1: logo as String?,
-          if (title != ignore) 2: title as String?,
-          if (code != ignore) 3: code as String?,
-          if (type != ignore) 4: type as String?,
+          if (coverImage != ignore) 1: coverImage as String?,
+          if (coverColor != ignore) 2: coverColor as int?,
+          if (logo != ignore) 3: logo as String?,
+          if (title != ignore) 4: title as String?,
+          if (code != ignore) 5: code as String?,
+          if (type != ignore) 6: type as String?,
         }) >
         0;
   }
@@ -141,6 +188,8 @@ class _CardModelUpdateImpl implements _CardModelUpdate {
 sealed class _CardModelUpdateAll {
   int call({
     required List<int> id,
+    String? coverImage,
+    int? coverColor,
     String? logo,
     String? title,
     String? code,
@@ -156,16 +205,20 @@ class _CardModelUpdateAllImpl implements _CardModelUpdateAll {
   @override
   int call({
     required List<int> id,
+    Object? coverImage = ignore,
+    Object? coverColor = ignore,
     Object? logo = ignore,
     Object? title = ignore,
     Object? code = ignore,
     Object? type = ignore,
   }) {
     return collection.updateProperties(id, {
-      if (logo != ignore) 1: logo as String?,
-      if (title != ignore) 2: title as String?,
-      if (code != ignore) 3: code as String?,
-      if (type != ignore) 4: type as String?,
+      if (coverImage != ignore) 1: coverImage as String?,
+      if (coverColor != ignore) 2: coverColor as int?,
+      if (logo != ignore) 3: logo as String?,
+      if (title != ignore) 4: title as String?,
+      if (code != ignore) 5: code as String?,
+      if (type != ignore) 6: type as String?,
     });
   }
 }
@@ -178,6 +231,8 @@ extension CardModelUpdate on IsarCollection<int, CardModel> {
 
 sealed class _CardModelQueryUpdate {
   int call({
+    String? coverImage,
+    int? coverColor,
     String? logo,
     String? title,
     String? code,
@@ -193,16 +248,20 @@ class _CardModelQueryUpdateImpl implements _CardModelQueryUpdate {
 
   @override
   int call({
+    Object? coverImage = ignore,
+    Object? coverColor = ignore,
     Object? logo = ignore,
     Object? title = ignore,
     Object? code = ignore,
     Object? type = ignore,
   }) {
     return query.updateProperties(limit: limit, {
-      if (logo != ignore) 1: logo as String?,
-      if (title != ignore) 2: title as String?,
-      if (code != ignore) 3: code as String?,
-      if (type != ignore) 4: type as String?,
+      if (coverImage != ignore) 1: coverImage as String?,
+      if (coverColor != ignore) 2: coverColor as int?,
+      if (logo != ignore) 3: logo as String?,
+      if (title != ignore) 4: title as String?,
+      if (code != ignore) 5: code as String?,
+      if (type != ignore) 6: type as String?,
     });
   }
 }
@@ -222,6 +281,8 @@ class _CardModelQueryBuilderUpdateImpl implements _CardModelQueryUpdate {
 
   @override
   int call({
+    Object? coverImage = ignore,
+    Object? coverColor = ignore,
     Object? logo = ignore,
     Object? title = ignore,
     Object? code = ignore,
@@ -230,10 +291,12 @@ class _CardModelQueryBuilderUpdateImpl implements _CardModelQueryUpdate {
     final q = query.build();
     try {
       return q.updateProperties(limit: limit, {
-        if (logo != ignore) 1: logo as String?,
-        if (title != ignore) 2: title as String?,
-        if (code != ignore) 3: code as String?,
-        if (type != ignore) 4: type as String?,
+        if (coverImage != ignore) 1: coverImage as String?,
+        if (coverColor != ignore) 2: coverColor as int?,
+        if (logo != ignore) 3: logo as String?,
+        if (title != ignore) 4: title as String?,
+        if (code != ignore) 5: code as String?,
+        if (type != ignore) 6: type as String?,
       });
     } finally {
       q.close();
@@ -332,19 +395,20 @@ extension CardModelQueryFilter
     });
   }
 
-  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> logoIsNull() {
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> coverImageIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const IsNullCondition(property: 1));
     });
   }
 
-  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> logoIsNotNull() {
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition>
+      coverImageIsNotNull() {
     return QueryBuilder.apply(not(), (query) {
       return query.addFilterCondition(const IsNullCondition(property: 1));
     });
   }
 
-  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> logoEqualTo(
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> coverImageEqualTo(
     String? value, {
     bool caseSensitive = true,
   }) {
@@ -359,7 +423,8 @@ extension CardModelQueryFilter
     });
   }
 
-  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> logoGreaterThan(
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition>
+      coverImageGreaterThan(
     String? value, {
     bool caseSensitive = true,
   }) {
@@ -375,7 +440,7 @@ extension CardModelQueryFilter
   }
 
   QueryBuilder<CardModel, CardModel, QAfterFilterCondition>
-      logoGreaterThanOrEqualTo(
+      coverImageGreaterThanOrEqualTo(
     String? value, {
     bool caseSensitive = true,
   }) {
@@ -390,7 +455,7 @@ extension CardModelQueryFilter
     });
   }
 
-  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> logoLessThan(
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> coverImageLessThan(
     String? value, {
     bool caseSensitive = true,
   }) {
@@ -406,7 +471,7 @@ extension CardModelQueryFilter
   }
 
   QueryBuilder<CardModel, CardModel, QAfterFilterCondition>
-      logoLessThanOrEqualTo(
+      coverImageLessThanOrEqualTo(
     String? value, {
     bool caseSensitive = true,
   }) {
@@ -421,7 +486,7 @@ extension CardModelQueryFilter
     });
   }
 
-  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> logoBetween(
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> coverImageBetween(
     String? lower,
     String? upper, {
     bool caseSensitive = true,
@@ -438,7 +503,8 @@ extension CardModelQueryFilter
     });
   }
 
-  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> logoStartsWith(
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition>
+      coverImageStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -453,7 +519,7 @@ extension CardModelQueryFilter
     });
   }
 
-  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> logoEndsWith(
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> coverImageEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -468,7 +534,7 @@ extension CardModelQueryFilter
     });
   }
 
-  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> logoContains(
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> coverImageContains(
       String value,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -482,7 +548,7 @@ extension CardModelQueryFilter
     });
   }
 
-  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> logoMatches(
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> coverImageMatches(
       String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -496,7 +562,8 @@ extension CardModelQueryFilter
     });
   }
 
-  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> logoIsEmpty() {
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition>
+      coverImageIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         const EqualCondition(
@@ -507,11 +574,294 @@ extension CardModelQueryFilter
     });
   }
 
-  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> logoIsNotEmpty() {
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition>
+      coverImageIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         const GreaterCondition(
           property: 1,
+          value: '',
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> coverColorIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const IsNullCondition(property: 2));
+    });
+  }
+
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition>
+      coverColorIsNotNull() {
+    return QueryBuilder.apply(not(), (query) {
+      return query.addFilterCondition(const IsNullCondition(property: 2));
+    });
+  }
+
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> coverColorEqualTo(
+    int? value,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        EqualCondition(
+          property: 2,
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition>
+      coverColorGreaterThan(
+    int? value,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterCondition(
+          property: 2,
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition>
+      coverColorGreaterThanOrEqualTo(
+    int? value,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterOrEqualCondition(
+          property: 2,
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> coverColorLessThan(
+    int? value,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessCondition(
+          property: 2,
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition>
+      coverColorLessThanOrEqualTo(
+    int? value,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessOrEqualCondition(
+          property: 2,
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> coverColorBetween(
+    int? lower,
+    int? upper,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        BetweenCondition(
+          property: 2,
+          lower: lower,
+          upper: upper,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> logoIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const IsNullCondition(property: 3));
+    });
+  }
+
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> logoIsNotNull() {
+    return QueryBuilder.apply(not(), (query) {
+      return query.addFilterCondition(const IsNullCondition(property: 3));
+    });
+  }
+
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> logoEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        EqualCondition(
+          property: 3,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> logoGreaterThan(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterCondition(
+          property: 3,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition>
+      logoGreaterThanOrEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterOrEqualCondition(
+          property: 3,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> logoLessThan(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessCondition(
+          property: 3,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition>
+      logoLessThanOrEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessOrEqualCondition(
+          property: 3,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> logoBetween(
+    String? lower,
+    String? upper, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        BetweenCondition(
+          property: 3,
+          lower: lower,
+          upper: upper,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> logoStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        StartsWithCondition(
+          property: 3,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> logoEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        EndsWithCondition(
+          property: 3,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> logoContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        ContainsCondition(
+          property: 3,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> logoMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        MatchesCondition(
+          property: 3,
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> logoIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const EqualCondition(
+          property: 3,
+          value: '',
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<CardModel, CardModel, QAfterFilterCondition> logoIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const GreaterCondition(
+          property: 3,
           value: '',
         ),
       );
@@ -525,7 +875,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         EqualCondition(
-          property: 2,
+          property: 4,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -540,7 +890,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterCondition(
-          property: 2,
+          property: 4,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -556,7 +906,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterOrEqualCondition(
-          property: 2,
+          property: 4,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -571,7 +921,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessCondition(
-          property: 2,
+          property: 4,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -587,7 +937,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessOrEqualCondition(
-          property: 2,
+          property: 4,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -603,7 +953,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         BetweenCondition(
-          property: 2,
+          property: 4,
           lower: lower,
           upper: upper,
           caseSensitive: caseSensitive,
@@ -619,7 +969,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         StartsWithCondition(
-          property: 2,
+          property: 4,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -634,7 +984,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         EndsWithCondition(
-          property: 2,
+          property: 4,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -648,7 +998,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         ContainsCondition(
-          property: 2,
+          property: 4,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -662,7 +1012,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         MatchesCondition(
-          property: 2,
+          property: 4,
           wildcard: pattern,
           caseSensitive: caseSensitive,
         ),
@@ -674,7 +1024,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         const EqualCondition(
-          property: 2,
+          property: 4,
           value: '',
         ),
       );
@@ -685,7 +1035,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         const GreaterCondition(
-          property: 2,
+          property: 4,
           value: '',
         ),
       );
@@ -699,7 +1049,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         EqualCondition(
-          property: 3,
+          property: 5,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -714,7 +1064,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterCondition(
-          property: 3,
+          property: 5,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -730,7 +1080,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterOrEqualCondition(
-          property: 3,
+          property: 5,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -745,7 +1095,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessCondition(
-          property: 3,
+          property: 5,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -761,7 +1111,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessOrEqualCondition(
-          property: 3,
+          property: 5,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -777,7 +1127,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         BetweenCondition(
-          property: 3,
+          property: 5,
           lower: lower,
           upper: upper,
           caseSensitive: caseSensitive,
@@ -793,7 +1143,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         StartsWithCondition(
-          property: 3,
+          property: 5,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -808,7 +1158,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         EndsWithCondition(
-          property: 3,
+          property: 5,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -822,7 +1172,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         ContainsCondition(
-          property: 3,
+          property: 5,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -836,7 +1186,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         MatchesCondition(
-          property: 3,
+          property: 5,
           wildcard: pattern,
           caseSensitive: caseSensitive,
         ),
@@ -848,7 +1198,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         const EqualCondition(
-          property: 3,
+          property: 5,
           value: '',
         ),
       );
@@ -859,7 +1209,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         const GreaterCondition(
-          property: 3,
+          property: 5,
           value: '',
         ),
       );
@@ -873,7 +1223,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         EqualCondition(
-          property: 4,
+          property: 6,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -888,7 +1238,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterCondition(
-          property: 4,
+          property: 6,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -904,7 +1254,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterOrEqualCondition(
-          property: 4,
+          property: 6,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -919,7 +1269,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessCondition(
-          property: 4,
+          property: 6,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -935,7 +1285,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessOrEqualCondition(
-          property: 4,
+          property: 6,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -951,7 +1301,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         BetweenCondition(
-          property: 4,
+          property: 6,
           lower: lower,
           upper: upper,
           caseSensitive: caseSensitive,
@@ -967,7 +1317,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         StartsWithCondition(
-          property: 4,
+          property: 6,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -982,7 +1332,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         EndsWithCondition(
-          property: 4,
+          property: 6,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -996,7 +1346,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         ContainsCondition(
-          property: 4,
+          property: 6,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1010,7 +1360,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         MatchesCondition(
-          property: 4,
+          property: 6,
           wildcard: pattern,
           caseSensitive: caseSensitive,
         ),
@@ -1022,7 +1372,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         const EqualCondition(
-          property: 4,
+          property: 6,
           value: '',
         ),
       );
@@ -1033,7 +1383,7 @@ extension CardModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         const GreaterCondition(
-          property: 4,
+          property: 6,
           value: '',
         ),
       );
@@ -1057,7 +1407,7 @@ extension CardModelQuerySortBy on QueryBuilder<CardModel, CardModel, QSortBy> {
     });
   }
 
-  QueryBuilder<CardModel, CardModel, QAfterSortBy> sortByLogo(
+  QueryBuilder<CardModel, CardModel, QAfterSortBy> sortByCoverImage(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(
@@ -1067,11 +1417,44 @@ extension CardModelQuerySortBy on QueryBuilder<CardModel, CardModel, QSortBy> {
     });
   }
 
-  QueryBuilder<CardModel, CardModel, QAfterSortBy> sortByLogoDesc(
+  QueryBuilder<CardModel, CardModel, QAfterSortBy> sortByCoverImageDesc(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(
         1,
+        sort: Sort.desc,
+        caseSensitive: caseSensitive,
+      );
+    });
+  }
+
+  QueryBuilder<CardModel, CardModel, QAfterSortBy> sortByCoverColor() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(2);
+    });
+  }
+
+  QueryBuilder<CardModel, CardModel, QAfterSortBy> sortByCoverColorDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(2, sort: Sort.desc);
+    });
+  }
+
+  QueryBuilder<CardModel, CardModel, QAfterSortBy> sortByLogo(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(
+        3,
+        caseSensitive: caseSensitive,
+      );
+    });
+  }
+
+  QueryBuilder<CardModel, CardModel, QAfterSortBy> sortByLogoDesc(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(
+        3,
         sort: Sort.desc,
         caseSensitive: caseSensitive,
       );
@@ -1082,7 +1465,7 @@ extension CardModelQuerySortBy on QueryBuilder<CardModel, CardModel, QSortBy> {
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(
-        2,
+        4,
         caseSensitive: caseSensitive,
       );
     });
@@ -1092,7 +1475,7 @@ extension CardModelQuerySortBy on QueryBuilder<CardModel, CardModel, QSortBy> {
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(
-        2,
+        4,
         sort: Sort.desc,
         caseSensitive: caseSensitive,
       );
@@ -1103,7 +1486,7 @@ extension CardModelQuerySortBy on QueryBuilder<CardModel, CardModel, QSortBy> {
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(
-        3,
+        5,
         caseSensitive: caseSensitive,
       );
     });
@@ -1113,7 +1496,7 @@ extension CardModelQuerySortBy on QueryBuilder<CardModel, CardModel, QSortBy> {
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(
-        3,
+        5,
         sort: Sort.desc,
         caseSensitive: caseSensitive,
       );
@@ -1124,7 +1507,7 @@ extension CardModelQuerySortBy on QueryBuilder<CardModel, CardModel, QSortBy> {
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(
-        4,
+        6,
         caseSensitive: caseSensitive,
       );
     });
@@ -1134,7 +1517,7 @@ extension CardModelQuerySortBy on QueryBuilder<CardModel, CardModel, QSortBy> {
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(
-        4,
+        6,
         sort: Sort.desc,
         caseSensitive: caseSensitive,
       );
@@ -1156,90 +1539,129 @@ extension CardModelQuerySortThenBy
     });
   }
 
-  QueryBuilder<CardModel, CardModel, QAfterSortBy> thenByLogo(
+  QueryBuilder<CardModel, CardModel, QAfterSortBy> thenByCoverImage(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(1, caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<CardModel, CardModel, QAfterSortBy> thenByLogoDesc(
+  QueryBuilder<CardModel, CardModel, QAfterSortBy> thenByCoverImageDesc(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(1, sort: Sort.desc, caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<CardModel, CardModel, QAfterSortBy> thenByTitle(
-      {bool caseSensitive = true}) {
+  QueryBuilder<CardModel, CardModel, QAfterSortBy> thenByCoverColor() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(2, caseSensitive: caseSensitive);
+      return query.addSortBy(2);
     });
   }
 
-  QueryBuilder<CardModel, CardModel, QAfterSortBy> thenByTitleDesc(
-      {bool caseSensitive = true}) {
+  QueryBuilder<CardModel, CardModel, QAfterSortBy> thenByCoverColorDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(2, sort: Sort.desc, caseSensitive: caseSensitive);
+      return query.addSortBy(2, sort: Sort.desc);
     });
   }
 
-  QueryBuilder<CardModel, CardModel, QAfterSortBy> thenByCode(
+  QueryBuilder<CardModel, CardModel, QAfterSortBy> thenByLogo(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(3, caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<CardModel, CardModel, QAfterSortBy> thenByCodeDesc(
+  QueryBuilder<CardModel, CardModel, QAfterSortBy> thenByLogoDesc(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(3, sort: Sort.desc, caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<CardModel, CardModel, QAfterSortBy> thenByType(
+  QueryBuilder<CardModel, CardModel, QAfterSortBy> thenByTitle(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(4, caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<CardModel, CardModel, QAfterSortBy> thenByTypeDesc(
+  QueryBuilder<CardModel, CardModel, QAfterSortBy> thenByTitleDesc(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(4, sort: Sort.desc, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<CardModel, CardModel, QAfterSortBy> thenByCode(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(5, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<CardModel, CardModel, QAfterSortBy> thenByCodeDesc(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(5, sort: Sort.desc, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<CardModel, CardModel, QAfterSortBy> thenByType(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(6, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<CardModel, CardModel, QAfterSortBy> thenByTypeDesc(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(6, sort: Sort.desc, caseSensitive: caseSensitive);
     });
   }
 }
 
 extension CardModelQueryWhereDistinct
     on QueryBuilder<CardModel, CardModel, QDistinct> {
-  QueryBuilder<CardModel, CardModel, QAfterDistinct> distinctByLogo(
+  QueryBuilder<CardModel, CardModel, QAfterDistinct> distinctByCoverImage(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(1, caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<CardModel, CardModel, QAfterDistinct> distinctByTitle(
-      {bool caseSensitive = true}) {
+  QueryBuilder<CardModel, CardModel, QAfterDistinct> distinctByCoverColor() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(2, caseSensitive: caseSensitive);
+      return query.addDistinctBy(2);
     });
   }
 
-  QueryBuilder<CardModel, CardModel, QAfterDistinct> distinctByCode(
+  QueryBuilder<CardModel, CardModel, QAfterDistinct> distinctByLogo(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(3, caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<CardModel, CardModel, QAfterDistinct> distinctByType(
+  QueryBuilder<CardModel, CardModel, QAfterDistinct> distinctByTitle(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(4, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<CardModel, CardModel, QAfterDistinct> distinctByCode(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(5, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<CardModel, CardModel, QAfterDistinct> distinctByType(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(6, caseSensitive: caseSensitive);
     });
   }
 }
@@ -1252,27 +1674,39 @@ extension CardModelQueryProperty1
     });
   }
 
-  QueryBuilder<CardModel, String?, QAfterProperty> logoProperty() {
+  QueryBuilder<CardModel, String?, QAfterProperty> coverImageProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(1);
     });
   }
 
-  QueryBuilder<CardModel, String, QAfterProperty> titleProperty() {
+  QueryBuilder<CardModel, int?, QAfterProperty> coverColorProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(2);
     });
   }
 
-  QueryBuilder<CardModel, String, QAfterProperty> codeProperty() {
+  QueryBuilder<CardModel, String?, QAfterProperty> logoProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(3);
     });
   }
 
-  QueryBuilder<CardModel, String, QAfterProperty> typeProperty() {
+  QueryBuilder<CardModel, String, QAfterProperty> titleProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(4);
+    });
+  }
+
+  QueryBuilder<CardModel, String, QAfterProperty> codeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(5);
+    });
+  }
+
+  QueryBuilder<CardModel, String, QAfterProperty> typeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(6);
     });
   }
 }
@@ -1285,27 +1719,39 @@ extension CardModelQueryProperty2<R>
     });
   }
 
-  QueryBuilder<CardModel, (R, String?), QAfterProperty> logoProperty() {
+  QueryBuilder<CardModel, (R, String?), QAfterProperty> coverImageProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(1);
     });
   }
 
-  QueryBuilder<CardModel, (R, String), QAfterProperty> titleProperty() {
+  QueryBuilder<CardModel, (R, int?), QAfterProperty> coverColorProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(2);
     });
   }
 
-  QueryBuilder<CardModel, (R, String), QAfterProperty> codeProperty() {
+  QueryBuilder<CardModel, (R, String?), QAfterProperty> logoProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(3);
     });
   }
 
-  QueryBuilder<CardModel, (R, String), QAfterProperty> typeProperty() {
+  QueryBuilder<CardModel, (R, String), QAfterProperty> titleProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(4);
+    });
+  }
+
+  QueryBuilder<CardModel, (R, String), QAfterProperty> codeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(5);
+    });
+  }
+
+  QueryBuilder<CardModel, (R, String), QAfterProperty> typeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(6);
     });
   }
 }
@@ -1318,27 +1764,39 @@ extension CardModelQueryProperty3<R1, R2>
     });
   }
 
-  QueryBuilder<CardModel, (R1, R2, String?), QOperations> logoProperty() {
+  QueryBuilder<CardModel, (R1, R2, String?), QOperations> coverImageProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(1);
     });
   }
 
-  QueryBuilder<CardModel, (R1, R2, String), QOperations> titleProperty() {
+  QueryBuilder<CardModel, (R1, R2, int?), QOperations> coverColorProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(2);
     });
   }
 
-  QueryBuilder<CardModel, (R1, R2, String), QOperations> codeProperty() {
+  QueryBuilder<CardModel, (R1, R2, String?), QOperations> logoProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(3);
     });
   }
 
-  QueryBuilder<CardModel, (R1, R2, String), QOperations> typeProperty() {
+  QueryBuilder<CardModel, (R1, R2, String), QOperations> titleProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(4);
+    });
+  }
+
+  QueryBuilder<CardModel, (R1, R2, String), QOperations> codeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(5);
+    });
+  }
+
+  QueryBuilder<CardModel, (R1, R2, String), QOperations> typeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(6);
     });
   }
 }

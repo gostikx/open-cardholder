@@ -10,7 +10,7 @@ final isarProvider = Provider<Isar>((ref) {
 final allCardsProvider = StreamProvider<List<CardModel>>((ref) {
   final isar = ref.watch(isarProvider);
   // Используем поток изменений в коллекции
-  return isar.cardModels.where().sortByTitle().watch(fireImmediately: true);
+  return isar.cardModels.where().sortById().watch(fireImmediately: true);
 });
 
 final addCardProvider = FutureProvider.autoDispose<void>((ref) async {
@@ -29,12 +29,22 @@ class AddCardNotifier extends StateNotifier<AsyncValue<void>> {
 
   Future<void> addCard({
     required String title,
-    required String description,
     required String code,
     required String type,
     String? logo,
+    String? coverImage,
+    int? coverColor,
   }) async {
     state = const AsyncValue.loading();
+
+    print({
+      title: title,
+      code: code,
+      type: type,
+      logo: logo,
+      coverImage: coverImage,
+      coverColor: coverColor,
+    });
 
     try {
       final isar = ref.read(isarProvider);
@@ -45,7 +55,10 @@ class AddCardNotifier extends StateNotifier<AsyncValue<void>> {
         code: code,
         type: type,
         logo: logo,
+        coverImage: coverImage,
+        coverColor: coverColor,
       );
+      print(card.toJson());
 
       await isar.writeAsync((isar) {
         isar.cardModels.put(card);

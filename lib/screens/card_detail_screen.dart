@@ -20,9 +20,9 @@ class CardDetailScreen extends ConsumerWidget {
               (c) => c.id == cardId,
               orElse: () => cardEmpty,
             );
-            if (card.title.isEmpty) {
-              return Center(child: Text('Card not found'));
-            }
+            // if (card.title.isEmpty) {
+            //   return Center(child: Text('Card not found'));
+            // }
             return CardDetail(card: card);
           },
           loading: () => const Center(child: CircularProgressIndicator()),

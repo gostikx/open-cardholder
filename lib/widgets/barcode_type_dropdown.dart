@@ -21,23 +21,29 @@ class BarcodeTypeDropdown extends StatelessWidget {
     this.decoration,
   });
 
+  static const _defaultInputDecoration = InputDecoration(
+    labelText: 'Barcode Type',
+    border: OutlineInputBorder(),
+  );
+
   @override
   Widget build(BuildContext context) {
-    return DropdownButtonFormField<BarcodeType>(
-      initialValue: value,
-      decoration: decoration ?? const InputDecoration(
-        labelText: 'Barcode Type',
-        border: OutlineInputBorder(),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16.0),
+      child: DropdownButtonFormField<BarcodeType>(
+        initialValue: value,
+        decoration: decoration ?? _defaultInputDecoration,
+        items: BarcodeType.values
+            .where((type) => allowedBarcodeTypes.contains(type))
+            .map((type) {
+              return DropdownMenuItem(
+                value: type,
+                child: Text(type.toString().split('.').last),
+              );
+            })
+            .toList(),
+        onChanged: onChanged,
       ),
-      items: BarcodeType.values
-          .where((type) => allowedBarcodeTypes.contains(type))
-          .map((type) {
-        return DropdownMenuItem(
-          value: type,
-          child: Text(type.toString().split('.').last),
-        );
-      }).toList(),
-      onChanged: onChanged,
     );
   }
 }
