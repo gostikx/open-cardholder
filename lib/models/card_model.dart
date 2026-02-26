@@ -17,4 +17,13 @@ class CardModel {
     required this.code,
     this.logo,
   });
+
+  // Метод возвращает Map со всеми полями
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'title': title,
+    'description': description,
+    'code': code,
+    'logo': logo,
+  };
 }

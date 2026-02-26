@@ -29,6 +29,7 @@ class AddCardNotifier extends StateNotifier<AsyncValue<void>> {
   Future<void> addCard({
     required String title,
     required String description,
+    required String code,
     String? logo,
   }) async {
     state = const AsyncValue.loading();
@@ -40,7 +41,7 @@ class AddCardNotifier extends StateNotifier<AsyncValue<void>> {
         id: isar.cardModels.autoIncrement(),
         title: title,
         description: description,
-        code: '',
+        code: code,
         logo: logo,
       );
 
@@ -78,6 +79,38 @@ class DeleteCardNotifier extends StateNotifier<AsyncValue<void>> {
 
       await isar.writeAsync((isar) {
         isar.cardModels.delete(cardId);
+      });
+
+      state = const AsyncValue.data(null);
+    } catch (error, stackTrace) {
+      state = AsyncValue.error(error, stackTrace);
+      rethrow;
+    }
+  }
+}
+
+final updateCardProvider = FutureProvider.autoDispose<void>((ref) async {
+  // This will be used as a notifier
+  throw UnimplementedError('Use updateCardNotifier instead');
+});
+
+final updateCardNotifierProvider = Provider<UpdateCardNotifier>((ref) {
+  return UpdateCardNotifier(ref);
+});
+
+class UpdateCardNotifier extends StateNotifier<AsyncValue<void>> {
+  final Ref ref;
+
+  UpdateCardNotifier(this.ref) : super(const AsyncValue.loading());
+
+  Future<void> updateCard(CardModel updatedCard) async {
+    state = const AsyncValue.loading();
+
+    try {
+      final isar = ref.read(isarProvider);
+
+      await isar.writeAsync((isar) {
+        isar.cardModels.put(updatedCard);
       });
 
       state = const AsyncValue.data(null);

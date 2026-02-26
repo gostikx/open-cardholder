@@ -57,6 +57,7 @@ class CardDetailScreen extends ConsumerWidget {
             if (card.title.isEmpty) {
               return Center(child: Text('Card not found'));
             }
+            print(card.toJson());
             return _buildCardDetails(context, card, ref);
           },
         );
@@ -71,6 +72,47 @@ class CardDetailScreen extends ConsumerWidget {
             GoRouter.of(context).pop();
           },
         ),
+        actions: [
+          PopupMenuButton(
+            icon: const Icon(Icons.more_vert),
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                value: 'edit',
+                child: const Text('Редактировать'),
+                onTap: () {
+                  // Navigate to update card screen
+                  GoRouter.of(context).push('/update-card/$cardId');
+                },
+              ),
+              PopupMenuItem(
+                value: 'delete',
+                child: const Text('Удалить'),
+                onTap: () {
+                  // We need to get the card again for the delete action
+                  final cardToDelete = ref
+                      .read(allCardsProvider)
+                      .when(
+                        loading: () => null,
+                        error: (_, __) => null,
+                        data: (cards) => cards.firstWhere(
+                          (c) => c.id == cardId,
+                          orElse: () => CardModel(
+                            id: 0,
+                            title: '',
+                            description: '',
+                            code: '',
+                          ),
+                        ),
+                      );
+                  print(cardToDelete?.toJson());
+                  if (cardToDelete != null) {
+                    _showDeleteConfirmationDialog(context, cardToDelete, ref);
+                  }
+                },
+              ),
+            ],
+          ),
+        ],
       ),
       body: cardAsync,
     );
@@ -110,7 +152,7 @@ class CardDetailScreen extends ConsumerWidget {
             height: 200,
           ),
           Text(
-            '7005 0006 5605 8062',
+            card.code.isNotEmpty ? card.code : '7005 0006 5605 8062',
             style: const TextStyle(
               color: Colors.black,
               fontSize: 16,
@@ -119,6 +161,42 @@ class CardDetailScreen extends ConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+
+  void _showDeleteConfirmationDialog(
+    BuildContext context,
+    CardModel card,
+    WidgetRef ref,
+  ) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Подтверждение удаления'),
+          content: Text(
+            'Вы уверены, что хотите удалить карту "${card.title}"?',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Закрываем диалог
+              },
+              child: const Text('Отмена'),
+            ),
+            TextButton(
+              onPressed: () {
+                // Выполняем удаление
+                ref.read(deleteCardNotifierProvider).deleteCard(card.id);
+                ref.invalidate(allCardsProvider);
+                Navigator.of(context).pop(); // Закрываем диалог
+                Navigator.of(context).pop(); // Возвращаемся на предыдущий экран
+              },
+              child: const Text('Удалить', style: TextStyle(color: Colors.red)),
+            ),
+          ],
+        );
+      },
     );
   }
 }
