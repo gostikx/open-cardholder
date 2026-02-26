@@ -1,8 +1,10 @@
+import 'package:barcode/barcode.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:open_cardholder/models/card_model.dart';
 import 'package:open_cardholder/providers/database_provider.dart';
+import 'package:barcode_widget/barcode_widget.dart';
 
 class UpdateCardScreen extends ConsumerWidget {
   final int cardId;
@@ -14,20 +16,19 @@ class UpdateCardScreen extends ConsumerWidget {
     final cardAsync = ref
         .watch(allCardsProvider)
         .when(
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, stackTrace) =>
-              Center(child: Text('Error loading card: $error')),
           data: (cards) {
             final card = cards.firstWhere(
               (c) => c.id == cardId,
-              orElse: () =>
-                  CardModel(id: 0, title: '', description: '', code: ''),
+              orElse: () => cardEmpty,
             );
             if (card.title.isEmpty) {
               return Center(child: Text('Card not found'));
             }
             return _buildUpdateForm(context, card, ref);
           },
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (error, stackTrace) =>
+              Center(child: Text('Error loading card: $error')),
         );
 
     return Scaffold(
@@ -51,8 +52,8 @@ class UpdateCardScreen extends ConsumerWidget {
     WidgetRef ref,
   ) {
     final TextEditingController titleController = TextEditingController(text: card.title);
-    final TextEditingController descriptionController = TextEditingController(text: card.description);
     final TextEditingController codeController = TextEditingController(text: card.code);
+    BarcodeType _selectedType = card.getBarcodeType();
 
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -68,19 +69,29 @@ class UpdateCardScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
           TextField(
-            controller: descriptionController,
-            decoration: const InputDecoration(
-              labelText: 'Card Description',
-              border: OutlineInputBorder(),
-            ),
-          ),
-          const SizedBox(height: 16),
-          TextField(
             controller: codeController,
             decoration: const InputDecoration(
               labelText: 'Card Code',
               border: OutlineInputBorder(),
             ),
+          ),
+          const SizedBox(height: 16),
+          // Dropdown for barcode type
+          DropdownButtonFormField<BarcodeType>(
+            value: _selectedType,
+            decoration: const InputDecoration(
+              labelText: 'Barcode Type',
+              border: OutlineInputBorder(),
+            ),
+            items: BarcodeType.values.map((type) {
+              return DropdownMenuItem(
+                value: type,
+                child: Text(type.toString().split('.').last),
+              );
+            }).toList(),
+            onChanged: (BarcodeType? newValue) {
+              _selectedType = newValue!;
+            },
           ),
           const SizedBox(height: 24),
           ElevatedButton(
@@ -88,8 +99,8 @@ class UpdateCardScreen extends ConsumerWidget {
               final updatedCard = CardModel(
                 id: card.id,
                 title: titleController.text,
-                description: descriptionController.text,
                 code: codeController.text,
+                type: _selectedType.toString(),
                 logo: card.logo,
               );
               

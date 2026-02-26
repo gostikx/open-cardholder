@@ -7,9 +7,10 @@ final isarProvider = Provider<Isar>((ref) {
   return DatabaseService.instance;
 });
 
-final allCardsProvider = FutureProvider<List<CardModel>>((ref) async {
+final allCardsProvider = StreamProvider<List<CardModel>>((ref) {
   final isar = ref.watch(isarProvider);
-  return isar.cardModels.where().sortByTitle().findAll();
+  // Используем поток изменений в коллекции
+  return isar.cardModels.where().sortByTitle().watch(fireImmediately: true);
 });
 
 final addCardProvider = FutureProvider.autoDispose<void>((ref) async {
@@ -30,6 +31,7 @@ class AddCardNotifier extends StateNotifier<AsyncValue<void>> {
     required String title,
     required String description,
     required String code,
+    required String type,
     String? logo,
   }) async {
     state = const AsyncValue.loading();
@@ -40,8 +42,8 @@ class AddCardNotifier extends StateNotifier<AsyncValue<void>> {
       final card = CardModel(
         id: isar.cardModels.autoIncrement(),
         title: title,
-        description: description,
         code: code,
+        type: type,
         logo: logo,
       );
 

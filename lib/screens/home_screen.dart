@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:open_cardholder/providers/database_provider.dart';
-import 'package:open_cardholder/widgets/CardPanel.dart';
+import 'package:open_cardholder/widgets/CardList.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -10,35 +10,17 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final cardsAsync = ref.watch(allCardsProvider);
-    
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('Open Cardholder'),
       ),
       body: cardsAsync.when(
+        data: (cards) => Cardlist(cards: cards),
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stackTrace) => Center(
-          child: Text('Error loading cards: $error'),
-        ),
-        data: (cards) => cards.isEmpty
-          ? const Center(child: Text('No cards yet. Add your first card!'))
-          : ListView.builder(
-              itemCount: cards.length,
-              itemBuilder: (context, index) {
-                final card = cards[index];
-                return InkWell(
-                  onTap: () {
-                    GoRouter.of(context).push('/card-detail/${card.id}');
-                  },
-                  child: CardPanel(
-                    cardLogo: card.logo ?? '',
-                    cardTitle: card.title,
-                    cardDescription: card.description,
-                  ),
-                );
-              },
-            ),
+        error: (error, stackTrace) =>
+            Center(child: Text('Error loading cards: $error')),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

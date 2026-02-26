@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:open_cardholder/providers/database_provider.dart';
+import 'package:barcode_widget/barcode_widget.dart';
 
 class CreateNewCard extends ConsumerStatefulWidget {
   const CreateNewCard({super.key});
@@ -12,6 +13,7 @@ class CreateNewCard extends ConsumerStatefulWidget {
 class _CreateNewCardState extends ConsumerState<CreateNewCard> {
   final TextEditingController _textController = TextEditingController();
   final TextEditingController _codeController = TextEditingController();
+  BarcodeType _selectedType = BarcodeType.Code128;
 
   @override
   void dispose() {
@@ -62,6 +64,29 @@ class _CreateNewCardState extends ConsumerState<CreateNewCard> {
             ),
           ),
 
+          // Dropdown for barcode type
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: DropdownButtonFormField<BarcodeType>(
+              value: _selectedType,
+              decoration: const InputDecoration(
+                labelText: 'Barcode Type',
+                border: OutlineInputBorder(),
+              ),
+              items: BarcodeType.values.map((type) {
+                return DropdownMenuItem(
+                  value: type,
+                  child: Text(type.toString().split('.').last),
+                );
+              }).toList(),
+              onChanged: (BarcodeType? newValue) {
+                setState(() {
+                  _selectedType = newValue!;
+                });
+              },
+            ),
+          ),
+
           // Spacer to push button to the bottom
           const Spacer(),
 
@@ -83,6 +108,7 @@ class _CreateNewCardState extends ConsumerState<CreateNewCard> {
                               title: cardName,
                               description: 'Card description',
                               code: code,
+                              type: _selectedType.toString(),
                               logo: null,
                             )
                             .then((_) {
@@ -96,8 +122,6 @@ class _CreateNewCardState extends ConsumerState<CreateNewCard> {
                               // Clear the text field
                               _textController.clear();
 
-                              // Refresh the cards list
-                              ref.invalidate(allCardsProvider);
 
                               // Navigate back
                               Navigator.pop(context);
