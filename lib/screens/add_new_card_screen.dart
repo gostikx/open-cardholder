@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:open_cardholder/providers/database_provider.dart';
 import 'package:barcode_widget/barcode_widget.dart';
 import 'package:open_cardholder/widgets/barcode_type_dropdown.dart';
@@ -141,6 +142,25 @@ class _CreateNewCardState extends ConsumerState<CreateNewCard> {
             controller: _codeController,
             label: 'Card Code',
             hint: 'Enter card code',
+            suffixIcon: InkWell(
+              child: Icon(Icons.linked_camera),
+              onTap: () async {
+                final result = await GoRouter.of(context).push('/scan-card');
+                if (result != null && result is Map) {
+                  final String code = result['code'] as String;
+                  final BarcodeType type = result['type'] as BarcodeType;
+                  
+                  setState(() {
+                    _codeController.text = code;
+                    _selectedType = type;
+                  });
+                  
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Code imported: $code')),
+                  );
+                }
+              },
+            ),
             change: (value) {},
           ),
 

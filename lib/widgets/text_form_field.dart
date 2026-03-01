@@ -7,12 +7,14 @@ class TextFormField extends StatelessWidget {
     required this.hint,
     required this.controller,
     this.change,
+    this.suffixIcon,
   });
 
   final String label;
   final String hint;
   final TextEditingController controller;
   final void Function(String)? change;
+  final Widget? suffixIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +49,11 @@ class TextFormField extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
               borderSide: const BorderSide(color: Colors.blue),
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 12,
+            ),
+            suffixIcon: suffixIcon,
           ),
           onChanged: change,
         ),
