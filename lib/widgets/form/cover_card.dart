@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:open_cardholder/widgets/color_picker.dart';
-// import 'package:image_picker/image_picker.dart';
+import 'package:image_picker/image_picker.dart';
 
 class CardCover extends StatefulWidget {
   const CardCover({
     super.key,
     required this.titleField,
+    required this.onColorChanged,
     this.currentCoverColor,
   });
 
   final TextField titleField;
   final Color? currentCoverColor;
+  final void Function(Color) onColorChanged;
 
   @override
   State<CardCover> createState() => _CardCoverState();
@@ -33,18 +35,18 @@ class _CardCoverState extends State<CardCover> {
   }
 
   // Method to pick image from device
-  // Future<void> _pickImage() async {
-  //   final ImagePicker picker = ImagePicker();
-  //   final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+  Future<void> _pickImage() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
 
-  //   if (image != null) {
-  //     // TODO: Handle the selected image
-  //     // For now, just show a snackbar
-  //     ScaffoldMessenger.of(
-  //       context,
-  //     ).showSnackBar(SnackBar(content: Text('Image selected: ${image.name}')));
-  //   }
-  // }
+    if (image != null) {
+      // TODO: Handle the selected image
+      // For now, just show a snackbar
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Image selected: ${image.name}')));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,6 +83,7 @@ class _CardCoverState extends State<CardCover> {
                 ColorPickerWidget(
                   currentColor: coverColor ?? Colors.cyan[100]!,
                   onColorChanged: (Color color) {
+                    widget.onColorChanged(color);
                     setState(() {
                       coverColor = color;
                     });
@@ -95,7 +98,7 @@ class _CardCoverState extends State<CardCover> {
                 IconButton(
                   icon: const Icon(Icons.image, color: Colors.black),
                   onPressed: () {
-                    // _pickImage();
+                    _pickImage();
                   },
                   tooltip: 'Upload image',
                 ),

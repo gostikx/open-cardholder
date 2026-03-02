@@ -5,7 +5,8 @@ import 'package:open_cardholder/providers/database_provider.dart';
 import 'package:barcode_widget/barcode_widget.dart';
 import 'package:open_cardholder/widgets/form/barcode_type_dropdown.dart';
 import 'package:open_cardholder/widgets/form/cover_card.dart';
-import 'package:open_cardholder/widgets/form/text_form_field.dart' as CustomWidgets;
+import 'package:open_cardholder/widgets/form/text_form_field.dart'
+    as CustomWidgets;
 
 class CreateNewCard extends ConsumerStatefulWidget {
   const CreateNewCard({super.key});
@@ -65,6 +66,11 @@ class _CreateNewCardState extends ConsumerState<CreateNewCard> {
               cursorColor: Colors.black,
               textAlign: TextAlign.left,
             ),
+            onColorChanged: (Color color) {
+              setState(() {
+                _selectedColor = color;
+              });
+            },
           ),
 
           CustomWidgets.TextFormField(

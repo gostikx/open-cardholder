@@ -21,28 +21,53 @@ class BarcodeTypeDropdown extends StatelessWidget {
     this.decoration,
   });
 
-  static const _defaultInputDecoration = InputDecoration(
+  static final _defaultInputDecoration = InputDecoration(
     labelText: 'Barcode Type',
-    border: OutlineInputBorder(),
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: const BorderSide(color: Colors.transparent),
+    ),
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: const BorderSide(color: Colors.transparent),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: const BorderSide(color: Colors.blue),
+    ),
+    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
   );
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16.0),
-      child: DropdownButtonFormField<BarcodeType>(
-        initialValue: value,
-        decoration: decoration ?? _defaultInputDecoration,
-        items: BarcodeType.values
-            .where((type) => allowedBarcodeTypes.contains(type))
-            .map((type) {
-              return DropdownMenuItem(
-                value: type,
-                child: Text(type.toString().split('.').last),
-              );
-            })
-            .toList(),
-        onChanged: onChanged,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.1),
+              blurRadius: 4,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: DropdownButtonFormField<BarcodeType>(
+          initialValue: value,
+          decoration: decoration ?? _defaultInputDecoration,
+          items: BarcodeType.values
+              .where((type) => allowedBarcodeTypes.contains(type))
+              .map((type) {
+                return DropdownMenuItem(
+                  value: type,
+                  child: Text(type.toString().split('.').last),
+                );
+              })
+              .toList(),
+          onChanged: onChanged,
+        ),
       ),
     );
   }

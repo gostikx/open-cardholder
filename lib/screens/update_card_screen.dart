@@ -107,6 +107,11 @@ class _UpdateCardScreenState extends ConsumerState<UpdateCardScreen> {
                   cursorColor: Colors.black,
                   textAlign: TextAlign.left,
                 ),
+                onColorChanged: (Color color) {
+                  setState(() {
+                    _selectedColor = color;
+                  });
+                },
               ),
 
               const SizedBox(height: 16),
