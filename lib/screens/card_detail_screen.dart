@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:open_cardholder/models/card_model.dart';
 import 'package:open_cardholder/providers/database_provider.dart';
+import 'package:open_cardholder/screens/error_screen.dart';
 import 'package:open_cardholder/widgets/CardDetail.dart';
+import 'package:open_cardholder/widgets/card_detail/confirm_dialog.dart';
 
 class CardDetailScreen extends ConsumerWidget {
   final int cardId;
@@ -12,23 +14,7 @@ class CardDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final cardAsync = ref
-        .watch(allCardsProvider)
-        .when(
-          data: (cards) {
-            final card = cards.firstWhere(
-              (c) => c.id == cardId,
-              orElse: () => cardEmpty,
-            );
-            // if (card.title.isEmpty) {
-            //   return Center(child: Text('Card not found'));
-            // }
-            return CardDetail(card: card);
-          },
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, stackTrace) =>
-              Center(child: Text('Error loading card: $error')),
-        );
+    final cardsProvider = ref.watch(allCardsProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -67,9 +53,28 @@ class CardDetailScreen extends ConsumerWidget {
                         loading: () => null,
                         error: (_, __) => null,
                       );
-                  print(cardToDelete?.toJson());
+                  print('deleted card: ${cardToDelete?.toJson()}');
                   if (cardToDelete != null) {
-                    _showDeleteConfirmationDialog(context, cardToDelete, ref);
+                    // _showDeleteConfirmationDialog(context, cardToDelete, ref);
+
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return ConfirmDialog(
+                          cardTitle: cardToDelete.title,
+                          onPressed: () {
+                            // Выполняем удаление
+                            ref
+                                .read(deleteCardNotifierProvider)
+                                .deleteCard(cardToDelete.id);
+                            Navigator.of(context).pop(); // Закрываем диалог
+                            Navigator.of(
+                              context,
+                            ).pop(); // Возвращаемся на предыдущий экран
+                          },
+                        );
+                      },
+                    );
                   }
                 },
               ),
@@ -77,42 +82,63 @@ class CardDetailScreen extends ConsumerWidget {
           ),
         ],
       ),
-      body: cardAsync,
-    );
-  }
+      body: cardsProvider.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (err, trace) => ErrorScreen(error: err, stackTrace: trace),
+        data: (cards) {
+          final card = cards.firstWhere(
+            (c) => c.id == cardId,
+            orElse: () => cardEmpty,
+          );
+          return Column(
+            children: [
+              CardDetail(card: card),
 
-  void _showDeleteConfirmationDialog(
-    BuildContext context,
-    CardModel card,
-    WidgetRef ref,
-  ) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Подтверждение удаления'),
-          content: Text(
-            'Вы уверены, что хотите удалить карту "${card.title}"?',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Закрываем диалог
-              },
-              child: const Text('Отмена'),
-            ),
-            TextButton(
-              onPressed: () {
-                // Выполняем удаление
-                ref.read(deleteCardNotifierProvider).deleteCard(card.id);
-                Navigator.of(context).pop(); // Закрываем диалог
-                Navigator.of(context).pop(); // Возвращаемся на предыдущий экран
-              },
-              child: const Text('Удалить', style: TextStyle(color: Colors.red)),
-            ),
-          ],
-        );
-      },
+              Spacer(),
+
+              TextButton(
+                onPressed: () {
+                  // Ваш код для открытия ссылки
+                },
+                style: TextButton.styleFrom(
+                  foregroundColor: Colors.blue, // Цвет ссылки
+                ),
+                child: const Text(
+                  'Delete card',
+                  style: TextStyle(
+                    decoration: TextDecoration.underline, // Подчеркивание
+                  ),
+                ),
+              ),
+
+              Padding(
+                padding: EdgeInsetsGeometry.only(
+                  top: 0,
+                  right: 16,
+                  left: 16,
+                  bottom: 16,
+                ),
+                child: ElevatedButton(
+                  onPressed: () {},
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 40,
+                      vertical: 16,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: const Text(
+                    'Save Card',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 }

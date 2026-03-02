@@ -49,14 +49,19 @@ class _ScanCardScreenState extends ConsumerState<ScanCardScreen> {
         });
 
         // Auto-detect barcode type based on the scanned code
-        _autoDetectBarcodeType(code);
+        _autoDetectBarcodeType(barcode.format);
 
         // Stop scanning after successful detection
         _scannerController?.stop();
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Code detected: $code'),
+            content: Column(
+              children: [
+                Text('Code detected: $code'),
+                Text('Barcode format: $_selectedType'),
+              ],
+            ),
             action: SnackBarAction(
               label: 'Continue Scanning',
               onPressed: () {
@@ -73,17 +78,41 @@ class _ScanCardScreenState extends ConsumerState<ScanCardScreen> {
     }
   }
 
-  void _autoDetectBarcodeType(String code) {
+  void _autoDetectBarcodeType(BarcodeFormat format) {
     // Simple heuristic to detect barcode type
-    if (code.length <= 13 && code.contains(RegExp(r'^[0-9]+$'))) {
-      setState(() {
-        _selectedType = BarcodeType.Code128; // EAN/UPC codes
-      });
-    } else if (code.length > 13) {
-      setState(() {
-        _selectedType = BarcodeType.Code128; // Default for longer codes
-      });
+    BarcodeType barcodeType = BarcodeType.Code128;
+
+    switch (format) {
+      case BarcodeFormat.code39:
+        barcodeType = BarcodeType.Code39;
+      case BarcodeFormat.code93:
+        barcodeType = BarcodeType.Code93;
+      case BarcodeFormat.ean8:
+        barcodeType = BarcodeType.CodeEAN8;
+      case BarcodeFormat.ean13:
+        barcodeType = BarcodeType.CodeEAN13;
+      case BarcodeFormat.code128:
+        barcodeType = BarcodeType.Code128;
+      case BarcodeFormat.dataMatrix:
+        barcodeType = BarcodeType.DataMatrix;
+      case BarcodeFormat.aztec:
+        barcodeType = BarcodeType.Aztec;
+      case BarcodeFormat.pdf417:
+        barcodeType = BarcodeType.PDF417;
+      case BarcodeFormat.qrCode:
+        barcodeType = BarcodeType.QrCode;
+      case BarcodeFormat.upcA:
+        barcodeType = BarcodeType.CodeUPCA;
+      case BarcodeFormat.upcE:
+        barcodeType = BarcodeType.CodeUPCE;
+      case BarcodeFormat.codabar:
+        barcodeType = BarcodeType.Codabar;
+      default:
+        barcodeType = BarcodeType.Code128;
     }
+    setState(() {
+      _selectedType = barcodeType; // Default for longer codes
+    });
   }
 
   void _startScanning() {
@@ -150,19 +179,35 @@ class _ScanCardScreenState extends ConsumerState<ScanCardScreen> {
                 ),
                 const Spacer(),
                 IconButton(
-                  icon: const Icon(Icons.info_outline, color: Colors.white, size: 28),
+                  icon: const Icon(
+                    Icons.info_outline,
+                    color: Colors.white,
+                    size: 28,
+                  ),
                   onPressed: () {},
                 ),
                 IconButton(
-                  icon: const Icon(Icons.flashlight_on, color: Colors.white, size: 28),
+                  icon: const Icon(
+                    Icons.flashlight_on,
+                    color: Colors.white,
+                    size: 28,
+                  ),
                   onPressed: _toggleTorch,
                 ),
                 IconButton(
-                  icon: const Icon(Icons.image_outlined, color: Colors.white, size: 28),
+                  icon: const Icon(
+                    Icons.image_outlined,
+                    color: Colors.white,
+                    size: 28,
+                  ),
                   onPressed: () {},
                 ),
                 IconButton(
-                  icon: const Icon(Icons.more_vert, color: Colors.white, size: 28),
+                  icon: const Icon(
+                    Icons.more_vert,
+                    color: Colors.white,
+                    size: 28,
+                  ),
                   onPressed: () {},
                 ),
               ],
@@ -178,7 +223,10 @@ class _ScanCardScreenState extends ConsumerState<ScanCardScreen> {
               child: GestureDetector(
                 onTap: _codeDetected ? _returnScannedCode : null,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 16,
+                  ),
                   decoration: BoxDecoration(
                     color: const Color(0xFFE1E3E1),
                     borderRadius: BorderRadius.circular(40),
@@ -186,10 +234,16 @@ class _ScanCardScreenState extends ConsumerState<ScanCardScreen> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.qr_code_scanner, color: Colors.black, size: 20),
+                      const Icon(
+                        Icons.qr_code_scanner,
+                        color: Colors.black,
+                        size: 20,
+                      ),
                       const SizedBox(width: 12),
                       Text(
-                        _codeDetected ? 'Use detected code' : 'Show your QR code',
+                        _codeDetected
+                            ? 'Use detected code'
+                            : 'Show your QR code',
                         style: const TextStyle(
                           color: Colors.black,
                           fontSize: 16,
@@ -202,7 +256,7 @@ class _ScanCardScreenState extends ConsumerState<ScanCardScreen> {
               ),
             ),
           ),
-          
+
           // Navigation indicator simulation (bottom bar)
           Positioned(
             bottom: 8,
@@ -255,7 +309,7 @@ class _ScanCardScreenState extends ConsumerState<ScanCardScreen> {
             ],
           ),
         ),
-        
+
         // Scanner frame with corners
         Center(
           child: SizedBox(
@@ -344,7 +398,9 @@ class _ScanCardScreenState extends ConsumerState<ScanCardScreen> {
                   child: Column(
                     children: [
                       Text(
-                        _codeDetected ? 'Code detected!' : 'Scan a card QR code',
+                        _codeDetected
+                            ? 'Code detected!'
+                            : 'Scan a card QR code',
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 26,

@@ -57,7 +57,7 @@ class CardPanel extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12.0),
           ),
-          leading: leadingWidget,
+          // leading: leadingWidget,
           title: Text(
             card.title,
             style: const TextStyle(
