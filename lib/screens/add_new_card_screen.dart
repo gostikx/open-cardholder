@@ -1,12 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:open_cardholder/providers/database_provider.dart';
 import 'package:barcode_widget/barcode_widget.dart';
 import 'package:open_cardholder/widgets/form/barcode_type_dropdown.dart';
 import 'package:open_cardholder/widgets/form/cover_card.dart';
-import 'package:open_cardholder/widgets/form/text_form_field.dart'
-    as CustomWidgets;
+
+class UpperCaseTextFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    return newValue.copyWith(
+      text: newValue.text.toUpperCase(),
+      selection: newValue.selection,
+    );
+  }
+}
 
 class CreateNewCard extends ConsumerStatefulWidget {
   const CreateNewCard({super.key});
@@ -43,6 +55,8 @@ class _CreateNewCardState extends ConsumerState<CreateNewCard> {
           CardCover(
             titleField: TextField(
               controller: _textController,
+              inputFormatters: [UpperCaseTextFormatter()],
+              textCapitalization: TextCapitalization.characters,
               style: const TextStyle(
                 color: Colors.black,
                 fontSize: 16,
@@ -65,38 +79,57 @@ class _CreateNewCardState extends ConsumerState<CreateNewCard> {
               ),
               cursorColor: Colors.black,
               textAlign: TextAlign.left,
+              maxLines: null,
+              keyboardType: TextInputType.multiline,
+              textInputAction: TextInputAction.newline,
+            ),
+            codeField: TextField(
+              controller: _codeController,
+              textCapitalization: TextCapitalization.characters,
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                // letterSpacing: 1.5,
+              ),
+              cursorColor: Colors.black,
+              textAlign: TextAlign.left,
+              decoration: InputDecoration(
+                hintText: 'Enter card code',
+                hintStyle: const TextStyle(
+                  color: Colors.black38,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.5,
+                ),
+                border: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                contentPadding: EdgeInsets.zero,
+                isDense: true,
+              ),
             ),
             onColorChanged: (Color color) {
               setState(() {
                 _selectedColor = color;
               });
             },
-          ),
+            onScanCode: () async {
+              final result = await GoRouter.of(context).push('/scan-card');
+              if (result != null && result is Map) {
+                final String code = result['code'] as String;
+                final BarcodeType type = result['type'] as BarcodeType;
 
-          CustomWidgets.TextFormField(
-            controller: _codeController,
-            label: 'Card Code',
-            hint: 'Enter card code',
-            suffixIcon: InkWell(
-              child: Icon(Icons.linked_camera),
-              onTap: () async {
-                final result = await GoRouter.of(context).push('/scan-card');
-                if (result != null && result is Map) {
-                  final String code = result['code'] as String;
-                  final BarcodeType type = result['type'] as BarcodeType;
+                setState(() {
+                  _codeController.text = code;
+                  _selectedType = type;
+                });
 
-                  setState(() {
-                    _codeController.text = code;
-                    _selectedType = type;
-                  });
-
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Code imported: $code')),
-                  );
-                }
-              },
-            ),
-            change: (value) {},
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(SnackBar(content: Text('Code imported: $code')));
+              }
+            },
           ),
 
           BarcodeTypeDropdown(

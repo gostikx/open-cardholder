@@ -5,9 +5,9 @@ import 'package:go_router/go_router.dart';
 import 'package:open_cardholder/models/card_model.dart';
 import 'package:open_cardholder/providers/database_provider.dart';
 import 'package:barcode_widget/barcode_widget.dart';
+import 'package:open_cardholder/screens/error_screen.dart';
 import 'package:open_cardholder/widgets/form/barcode_type_dropdown.dart';
 import 'package:open_cardholder/widgets/form/cover_card.dart';
-import 'package:open_cardholder/widgets/form/text_form_field.dart' as CustomWidgets;
 
 class UpdateCardScreen extends ConsumerStatefulWidget {
   final int cardId;
@@ -61,7 +61,7 @@ class _UpdateCardScreenState extends ConsumerState<UpdateCardScreen> {
       body: cardsAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stackTrace) =>
-            Center(child: Text('Error loading card: $error')),
+            ErrorScreen(error: error, stackTrace: stackTrace),
         data: (cards) {
           final card = cards.firstWhere(
             (c) => c.id == widget.cardId,
@@ -106,44 +106,59 @@ class _UpdateCardScreenState extends ConsumerState<UpdateCardScreen> {
                   ),
                   cursorColor: Colors.black,
                   textAlign: TextAlign.left,
+                  maxLines: null,
+                  keyboardType: TextInputType.multiline,
+                  textInputAction: TextInputAction.newline,
+                ),
+                codeField: TextField(
+                  controller: _codeController,
+                  textCapitalization: TextCapitalization.characters,
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    // letterSpacing: 1.5,
+                  ),
+                  decoration: const InputDecoration(
+                    hintText: 'Enter card code',
+                    hintStyle: TextStyle(
+                      color: Colors.black38,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.5,
+                    ),
+                    border: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    contentPadding: EdgeInsets.zero,
+                    isDense: true,
+                  ),
+                  cursorColor: Colors.black,
+                  textAlign: TextAlign.left,
                 ),
                 onColorChanged: (Color color) {
                   setState(() {
                     _selectedColor = color;
                   });
                 },
+                onScanCode: () async {
+                  final result = await GoRouter.of(context).push('/scan-card');
+                  if (result != null && result is Map) {
+                    final String code = result['code'] as String;
+                    final BarcodeType type = result['type'] as BarcodeType;
+
+                    setState(() {
+                      _codeController.text = code;
+                      _selectedType = type;
+                    });
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Code imported: $code')),
+                    );
+                  }
+                },
               ),
 
-              const SizedBox(height: 16),
-              CustomWidgets.TextFormField(
-                controller: _codeController,
-                label: 'Card Code',
-                hint: 'Enter card code',
-                suffixIcon: InkWell(
-                  child: Icon(Icons.linked_camera),
-                  onTap: () async {
-                    final result = await GoRouter.of(
-                      context,
-                    ).push('/scan-card');
-                    if (result != null && result is Map) {
-                      final String code = result['code'] as String;
-                      final BarcodeType type = result['type'] as BarcodeType;
-
-                      setState(() {
-                        _codeController.text = code;
-                        _selectedType = type;
-                      });
-
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Code imported: $code')),
-                      );
-                    }
-                  },
-                ),
-                change: (value) {},
-              ),
-
-              const SizedBox(height: 16),
               // Dropdown for barcode type
               BarcodeTypeDropdown(
                 value: _selectedType,
@@ -153,25 +168,35 @@ class _UpdateCardScreenState extends ConsumerState<UpdateCardScreen> {
                   });
                 },
               ),
-              const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: () {
-                  final updatedCard = CardModel(
-                    id: card.id,
-                    title: _titleController.text,
-                    code: _codeController.text,
-                    type: _selectedType.toString(),
-                    coverColor: _selectedColor.toARGB32(),
-                  );
-                  print(updatedCard.toJson());
 
-                  ref.read(updateCardNotifierProvider).updateCard(updatedCard);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Card updated successfully')),
-                  );
-                  GoRouter.of(context).pop();
-                },
-                child: const Text('Update Card'),
+              const Spacer(),
+
+              // Button at the bottom
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    final updatedCard = CardModel(
+                      id: card.id,
+                      title: _titleController.text,
+                      code: _codeController.text,
+                      type: _selectedType.toString(),
+                      coverColor: _selectedColor.toARGB32(),
+                    );
+                    print(updatedCard.toJson());
+
+                    ref
+                        .read(updateCardNotifierProvider)
+                        .updateCard(updatedCard);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Card updated successfully'),
+                      ),
+                    );
+                    GoRouter.of(context).pop();
+                  },
+                  child: const Text('Update Card'),
+                ),
               ),
             ],
           );

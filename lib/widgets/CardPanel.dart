@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:open_cardholder/models/card_model.dart';
-import 'package:open_cardholder/widgets/LeadingWidget.dart';
 
 class CardPanel extends StatelessWidget {
   const CardPanel({super.key, required this.card});
@@ -9,25 +8,7 @@ class CardPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget leadingWidget;
-
-    if (card.logo != null && card.logo!.isNotEmpty) {
-      leadingWidget = Container(
-        height: 80.0,
-        width: 80.0,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          image: DecorationImage(
-            image: NetworkImage(card.logo!),
-            fit: BoxFit.cover,
-          ),
-        ),
-      );
-    } else {
-      leadingWidget = LeadingWidget(title: card.title);
-    }
-
-    print(card.toJson());
+    // print(card.toJson());
     int colorInt = Colors.grey[100]!.toARGB32();
     if (card.coverColor != null && card.coverColor.runtimeType == int) {
       colorInt = card.coverColor!;
@@ -66,11 +47,6 @@ class CardPanel extends StatelessWidget {
               color: Colors.black87,
             ),
           ),
-          // trailing: const Icon(
-          //   Icons.chevron_right,
-          //   color: Colors.black38,
-          //   size: 24.0,
-          // ),
         ),
       ),
     );

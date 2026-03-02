@@ -26,22 +26,23 @@ class CardDetailScreen extends ConsumerWidget {
             GoRouter.of(context).pop();
           },
         ),
-        actions: [
-          PopupMenuButton(
-            icon: const Icon(Icons.more_vert),
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                value: 'edit',
-                child: const Text('Редактировать'),
-                onTap: () {
-                  // Navigate to update card screen
-                  GoRouter.of(context).push('/update-card/$cardId');
-                },
-              ),
-              PopupMenuItem(
-                value: 'delete',
-                child: const Text('Удалить'),
-                onTap: () {
+      ),
+      body: cardsProvider.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (err, trace) => ErrorScreen(error: err, stackTrace: trace),
+        data: (cards) {
+          final card = cards.firstWhere(
+            (c) => c.id == cardId,
+            orElse: () => cardEmpty,
+          );
+          return Column(
+            children: [
+              CardDetail(card: card),
+
+              Spacer(),
+
+              TextButton(
+                onPressed: () {
                   // We need to get the card again for the delete action
                   final cardToDelete = ref
                       .read(allCardsProvider)
@@ -77,29 +78,6 @@ class CardDetailScreen extends ConsumerWidget {
                     );
                   }
                 },
-              ),
-            ],
-          ),
-        ],
-      ),
-      body: cardsProvider.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, trace) => ErrorScreen(error: err, stackTrace: trace),
-        data: (cards) {
-          final card = cards.firstWhere(
-            (c) => c.id == cardId,
-            orElse: () => cardEmpty,
-          );
-          return Column(
-            children: [
-              CardDetail(card: card),
-
-              Spacer(),
-
-              TextButton(
-                onPressed: () {
-                  // Ваш код для открытия ссылки
-                },
                 style: TextButton.styleFrom(
                   foregroundColor: Colors.blue, // Цвет ссылки
                 ),
@@ -119,7 +97,10 @@ class CardDetailScreen extends ConsumerWidget {
                   bottom: 16,
                 ),
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    // Navigate to update card screen
+                    GoRouter.of(context).push('/update-card/$cardId');
+                  },
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 40,
@@ -130,7 +111,7 @@ class CardDetailScreen extends ConsumerWidget {
                     ),
                   ),
                   child: const Text(
-                    'Save Card',
+                    'Редактировать',
                     style: TextStyle(fontSize: 18),
                   ),
                 ),

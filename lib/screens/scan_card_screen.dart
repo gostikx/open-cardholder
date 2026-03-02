@@ -115,28 +115,8 @@ class _ScanCardScreenState extends ConsumerState<ScanCardScreen> {
     });
   }
 
-  void _startScanning() {
-    setState(() {
-      _codeDetected = false;
-      _isScanning = true;
-      _scannedCode = '';
-    });
-    _scannerController?.start();
-  }
-
   void _toggleTorch() {
     _scannerController?.toggleTorch();
-  }
-
-  void _switchCamera() {
-    _scannerController?.switchCamera();
-  }
-
-  void _saveCard() {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text('Card saved')));
-    GoRouter.of(context).pop();
   }
 
   void _returnScannedCode() {

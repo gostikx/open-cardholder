@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:open_cardholder/widgets/color_picker.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 class CardCover extends StatefulWidget {
   const CardCover({
     super.key,
     required this.titleField,
+    required this.codeField,
     required this.onColorChanged,
     this.currentCoverColor,
+    this.onScanCode,
   });
 
   final TextField titleField;
+  final TextField codeField;
   final Color? currentCoverColor;
   final void Function(Color) onColorChanged;
+  final void Function()? onScanCode;
 
   @override
   State<CardCover> createState() => _CardCoverState();
@@ -34,26 +37,12 @@ class _CardCoverState extends State<CardCover> {
     super.dispose();
   }
 
-  // Method to pick image from device
-  Future<void> _pickImage() async {
-    final ImagePicker picker = ImagePicker();
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
-
-    if (image != null) {
-      // TODO: Handle the selected image
-      // For now, just show a snackbar
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Image selected: ${image.name}')));
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       padding: EdgeInsets.all(16.0),
-      height: 120.0,
+      height: 180.0,
       decoration: BoxDecoration(
         color: coverColor,
         borderRadius: BorderRadius.circular(12),
@@ -69,41 +58,66 @@ class _CardCoverState extends State<CardCover> {
         //   fit: BoxFit.cover,
         // ),
       ),
-      child: Stack(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          widget.titleField,
-
-          // Buttons in bottom right corner
-          Positioned(
-            bottom: 0,
-            right: 0,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                ColorPickerWidget(
-                  currentColor: coverColor ?? Colors.cyan[100]!,
-                  onColorChanged: (Color color) {
-                    widget.onColorChanged(color);
-                    setState(() {
-                      coverColor = color;
-                    });
-                  },
-                  onColorPicked: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Color changed')),
-                    );
-                  },
-                ),
-                // Image picker button
-                IconButton(
-                  icon: const Icon(Icons.image, color: Colors.black),
-                  onPressed: () {
-                    _pickImage();
-                  },
-                  tooltip: 'Upload image',
-                ),
-              ],
-            ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(child: widget.titleField),
+              IconButton(
+                icon: const Icon(Icons.manage_search, color: Colors.black),
+                constraints: const BoxConstraints(),
+                padding: EdgeInsets.zero,
+                onPressed: () {
+                  // open bottomsheet
+                  showModalBottomSheet(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(20),
+                        child: Wrap(
+                          alignment: WrapAlignment.center,
+                          children: [
+                            const Text(
+                              'Выберите цвет',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 16, width: double.infinity),
+                            BlockPicker(
+                              pickerColor: coverColor ?? Colors.cyan,
+                              useInShowDialog: false,
+                              onColorChanged: (Color color) {
+                                setState(() {
+                                  widget.onColorChanged(color);
+                                  coverColor = color;
+                                });
+                                Navigator.of(context).pop(color);
+                              },
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                },
+                tooltip: 'Demo',
+              ),
+            ],
+          ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(child: widget.codeField),
+              IconButton(
+                icon: const Icon(Icons.linked_camera),
+                onPressed: widget.onScanCode,
+              ),
+            ],
           ),
         ],
       ),
