@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_scanner/mobile_scanner.dart' hide BarcodeType;
 import 'package:barcode_widget/barcode_widget.dart' hide Barcode;
+import 'package:opencardholder/widgets/scanner/scanner_frame.dart';
 
 class ScanCardScreen extends ConsumerStatefulWidget {
   const ScanCardScreen({super.key});
@@ -291,106 +292,22 @@ class _ScanCardScreenState extends ConsumerState<ScanCardScreen> {
         ),
 
         // Scanner frame with corners
-        Center(
-          child: SizedBox(
-            width: 320,
-            height: 320,
-            child: Stack(
+        ScannerFrame(
+          instructionsWidget: Positioned(
+            bottom: -110,
+            left: -50,
+            right: -50,
+            child: Column(
               children: [
-                // Corner indicators - Top-left (Google Red)
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  child: Container(
-                    width: 80,
-                    height: 80,
-                    decoration: const BoxDecoration(
-                      border: Border(
-                        top: BorderSide(color: Color(0xFFEA4335), width: 10),
-                        left: BorderSide(color: Color(0xFFEA4335), width: 10),
-                      ),
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(50),
-                      ),
-                    ),
+                Text(
+                  _codeDetected ? 'Code detected!' : 'Scan a card QR code',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 26,
+                    fontWeight: FontWeight.w400,
+                    letterSpacing: 0.5,
                   ),
-                ),
-                // Top-right (Google Yellow/Orange)
-                Positioned(
-                  top: 0,
-                  right: 0,
-                  child: Container(
-                    width: 80,
-                    height: 80,
-                    decoration: const BoxDecoration(
-                      border: Border(
-                        top: BorderSide(color: Color(0xFFFBBC04), width: 10),
-                        right: BorderSide(color: Color(0xFFFBBC04), width: 10),
-                      ),
-                      borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(50),
-                      ),
-                    ),
-                  ),
-                ),
-                // Bottom-left (Google Blue)
-                Positioned(
-                  bottom: 0,
-                  left: 0,
-                  child: Container(
-                    width: 80,
-                    height: 80,
-                    decoration: const BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(color: Color(0xFF4285F4), width: 10),
-                        left: BorderSide(color: Color(0xFF4285F4), width: 10),
-                      ),
-                      borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(50),
-                      ),
-                    ),
-                  ),
-                ),
-                // Bottom-right (Google Green)
-                Positioned(
-                  bottom: 0,
-                  right: 0,
-                  child: Container(
-                    width: 80,
-                    height: 80,
-                    decoration: const BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(color: Color(0xFF34A853), width: 10),
-                        right: BorderSide(color: Color(0xFF34A853), width: 10),
-                      ),
-                      borderRadius: BorderRadius.only(
-                        bottomRight: Radius.circular(50),
-                      ),
-                    ),
-                  ),
-                ),
-
-                // Instructions
-                Positioned(
-                  bottom: -110,
-                  left: -50,
-                  right: -50,
-                  child: Column(
-                    children: [
-                      Text(
-                        _codeDetected
-                            ? 'Code detected!'
-                            : 'Scan a card QR code',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 26,
-                          fontWeight: FontWeight.w400,
-                          letterSpacing: 0.5,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
+                  textAlign: TextAlign.center,
                 ),
               ],
             ),

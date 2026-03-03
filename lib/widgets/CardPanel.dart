@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:open_cardholder/models/card_model.dart';
+import 'package:opencardholder/models/card_model.dart';
 
 class CardPanel extends StatelessWidget {
   const CardPanel({super.key, required this.card});

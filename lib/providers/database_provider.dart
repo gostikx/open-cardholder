@@ -1,6 +1,6 @@
 import 'package:riverpod/riverpod.dart';
-import 'package:open_cardholder/models/card_model.dart';
-import 'package:open_cardholder/services/database_service.dart';
+import 'package:opencardholder/models/card_model.dart';
+import 'package:opencardholder/services/database_service.dart';
 import 'package:isar/isar.dart';
 
 final isarProvider = Provider<Isar>((ref) {

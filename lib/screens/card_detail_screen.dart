@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:open_cardholder/models/card_model.dart';
-import 'package:open_cardholder/providers/database_provider.dart';
-import 'package:open_cardholder/screens/error_screen.dart';
-import 'package:open_cardholder/widgets/CardDetail.dart';
-import 'package:open_cardholder/widgets/card_detail/confirm_dialog.dart';
+import 'package:opencardholder/models/card_model.dart';
+import 'package:opencardholder/providers/database_provider.dart';
+import 'package:opencardholder/screens/error_screen.dart';
+import 'package:opencardholder/widgets/CardDetail.dart';
+import 'package:opencardholder/widgets/card_detail/confirm_dialog.dart';
 
 class CardDetailScreen extends ConsumerWidget {
   final int cardId;

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:open_cardholder/models/card_model.dart';
-import 'package:open_cardholder/widgets/card_detail/barcode.dart';
+import 'package:opencardholder/models/card_model.dart';
+import 'package:opencardholder/widgets/card_detail/barcode.dart';
 
 class CardDetailHeader extends StatelessWidget {
   const CardDetailHeader({super.key, required this.title});

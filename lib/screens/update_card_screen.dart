@@ -2,12 +2,12 @@ import 'package:barcode/barcode.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:open_cardholder/models/card_model.dart';
-import 'package:open_cardholder/providers/database_provider.dart';
+import 'package:opencardholder/models/card_model.dart';
+import 'package:opencardholder/providers/database_provider.dart';
 import 'package:barcode_widget/barcode_widget.dart';
-import 'package:open_cardholder/screens/error_screen.dart';
-import 'package:open_cardholder/widgets/form/barcode_type_dropdown.dart';
-import 'package:open_cardholder/widgets/form/cover_card.dart';
+import 'package:opencardholder/screens/error_screen.dart';
+import 'package:opencardholder/widgets/form/barcode_type_dropdown.dart';
+import 'package:opencardholder/widgets/form/cover_card.dart';
 
 class UpdateCardScreen extends ConsumerStatefulWidget {
   final int cardId;

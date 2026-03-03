@@ -1,6 +1,6 @@
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:open_cardholder/models/card_model.dart';
+import 'package:opencardholder/models/card_model.dart';
 
 class DatabaseService {
   static late Isar _isar;

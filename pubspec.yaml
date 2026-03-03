@@ -1,5 +1,5 @@
-name: open_cardholder
-description: "A new Flutter project."
+name: opencardholder
+description: "An open alternative to Google Pay for storing discount, gift, and loyalty cards"
 publish_to: 'none'
 version: 1.0.0+1
 

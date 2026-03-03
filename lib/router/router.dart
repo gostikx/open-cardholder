@@ -1,9 +1,9 @@
 import 'package:go_router/go_router.dart';
-import 'package:open_cardholder/screens/add_new_card_screen.dart';
-import 'package:open_cardholder/screens/card_detail_screen.dart';
-import 'package:open_cardholder/screens/home_screen.dart';
-import 'package:open_cardholder/screens/scan_card_screen.dart';
-import 'package:open_cardholder/screens/update_card_screen.dart';
+import 'package:opencardholder/screens/add_new_card_screen.dart';
+import 'package:opencardholder/screens/card_detail_screen.dart';
+import 'package:opencardholder/screens/home_screen.dart';
+import 'package:opencardholder/screens/scan_card_screen.dart';
+import 'package:opencardholder/screens/update_card_screen.dart';
 
 final GoRouter router = GoRouter(
   routes: [
