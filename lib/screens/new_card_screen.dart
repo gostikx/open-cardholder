@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:opencardholder/providers/database_provider.dart';
 import 'package:barcode_widget/barcode_widget.dart';
+import 'package:opencardholder/widgets/button.dart';
 import 'package:opencardholder/widgets/form/barcode_type_dropdown.dart';
 import 'package:opencardholder/widgets/form/cover_card.dart';
 
@@ -43,11 +44,10 @@ class _CreateNewCardState extends ConsumerState<CreateNewCard> {
 
   @override
   Widget build(BuildContext context) {
-    final addCardAsync = ref.watch(addCardProvider);
+    final addCardAsync = ref.watch(addCardNotifierProvider);
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('Add New Card'),
       ),
       body: Column(
@@ -145,70 +145,59 @@ class _CreateNewCardState extends ConsumerState<CreateNewCard> {
           const Spacer(),
 
           // Button at the bottom
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: ElevatedButton(
-              onPressed: addCardAsync.isLoading
-                  ? null
-                  : () {
-                      final String cardName = _textController.text.trim();
-                      final String code = _codeController.text.trim();
+          Button(
+            onPressed: addCardAsync.isLoading
+                ? null
+                : () {
+                    final String cardName = _textController.text.trim();
+                    final String code = _codeController.text.trim();
 
-                      if (cardName.isNotEmpty) {
-                        // Save the card using Riverpod
-                        final notifier = ref.read(addCardNotifierProvider);
-                        notifier
-                            .addCard(
-                              title: cardName,
-                              code: code,
-                              type: _selectedType.toString(),
-                              coverColor:
-                                  _selectedColor?.toARGB32() ??
-                                  Colors.grey[100]!.toARGB32(),
-                            )
-                            .then((_) {
-                              // Show success message
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('Card "$cardName" saved'),
-                                ),
-                              );
+                    if (cardName.isNotEmpty) {
+                      // Save the card using Riverpod
+                      final notifier = ref.read(addCardNotifierProvider.notifier);
+                      notifier
+                          .addCard(
+                            title: cardName,
+                            code: code,
+                            type: _selectedType.toString(),
+                            coverColor:
+                                _selectedColor?.toARGB32() ??
+                                Colors.grey[100]!.toARGB32(),
+                          )
+                          .then((_) {
+                            // Show success message
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Card "$cardName" saved')),
+                            );
 
-                              // Clear the text field
-                              _textController.clear();
+                            // Clear the text field
+                            _textController.clear();
 
-                              // Navigate back
-                              Navigator.pop(context);
-                            })
-                            .catchError((error) {
-                              // Show error message
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('Error saving card: $error'),
-                                ),
-                              );
-                            });
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Please enter a card name'),
-                          ),
-                        );
-                      }
-                    },
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 40,
-                  vertical: 16,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: addCardAsync.isLoading
-                  ? const CircularProgressIndicator(color: Colors.white)
-                  : const Text('Save Card', style: TextStyle(fontSize: 18)),
-            ),
+                            // Navigate back
+                            Navigator.pop(context);
+                          })
+                          .catchError((error) {
+                            // Show error message
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Error saving card: $error'),
+                              ),
+                            );
+                          });
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Please enter a card name'),
+                        ),
+                      );
+                    }
+                  },
+            child: addCardAsync.isLoading
+                ? const CircularProgressIndicator(color: Color(0xFF1E3A8A))
+                : const Text(
+                    'Добавить',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                  ),
           ),
         ],
       ),

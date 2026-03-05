@@ -13,19 +13,19 @@ final allCardsProvider = StreamProvider<List<CardModel>>((ref) {
   return isar.cardModels.where().sortById().watch(fireImmediately: true);
 });
 
-final addCardProvider = FutureProvider.autoDispose<void>((ref) async {
-  // This will be used as a notifier
-  throw UnimplementedError('Use addCardNotifier instead');
-});
+// final addCardProvider = FutureProvider.autoDispose<void>((ref) async {
+//   // This will be used as a notifier
+//   throw UnimplementedError('Use addCardNotifier instead');
+// });
 
-final addCardNotifierProvider = Provider<AddCardNotifier>((ref) {
+final addCardNotifierProvider = StateNotifierProvider<AddCardNotifier, AsyncValue<void>>((ref) {
   return AddCardNotifier(ref);
 });
 
 class AddCardNotifier extends StateNotifier<AsyncValue<void>> {
   final Ref ref;
 
-  AddCardNotifier(this.ref) : super(const AsyncValue.loading());
+  AddCardNotifier(this.ref) : super(const AsyncValue.data(null));
 
   Future<void> addCard({
     required String title,
@@ -36,15 +36,6 @@ class AddCardNotifier extends StateNotifier<AsyncValue<void>> {
     int? coverColor,
   }) async {
     state = const AsyncValue.loading();
-
-    print({
-      title: title,
-      code: code,
-      type: type,
-      logo: logo,
-      coverImage: coverImage,
-      coverColor: coverColor,
-    });
 
     try {
       final isar = ref.read(isarProvider);
@@ -72,10 +63,10 @@ class AddCardNotifier extends StateNotifier<AsyncValue<void>> {
   }
 }
 
-final deleteCardProvider = FutureProvider.autoDispose<void>((ref) async {
-  // This will be used as a notifier
-  throw UnimplementedError('Use deleteCardNotifier instead');
-});
+// final deleteCardProvider = FutureProvider.autoDispose<void>((ref) async {
+//   // This will be used as a notifier
+//   throw UnimplementedError('Use deleteCardNotifier instead');
+// });
 
 final deleteCardNotifierProvider = Provider<DeleteCardNotifier>((ref) {
   return DeleteCardNotifier(ref);
@@ -104,10 +95,10 @@ class DeleteCardNotifier extends StateNotifier<AsyncValue<void>> {
   }
 }
 
-final updateCardProvider = FutureProvider.autoDispose<void>((ref) async {
-  // This will be used as a notifier
-  throw UnimplementedError('Use updateCardNotifier instead');
-});
+// final updateCardProvider = FutureProvider.autoDispose<void>((ref) async {
+//   // This will be used as a notifier
+//   throw UnimplementedError('Use updateCardNotifier instead');
+// });
 
 final updateCardNotifierProvider = Provider<UpdateCardNotifier>((ref) {
   return UpdateCardNotifier(ref);

@@ -6,6 +6,7 @@ import 'package:opencardholder/models/card_model.dart';
 import 'package:opencardholder/providers/database_provider.dart';
 import 'package:barcode_widget/barcode_widget.dart';
 import 'package:opencardholder/screens/error_screen.dart';
+import 'package:opencardholder/widgets/button.dart';
 import 'package:opencardholder/widgets/form/barcode_type_dropdown.dart';
 import 'package:opencardholder/widgets/form/cover_card.dart';
 
@@ -49,7 +50,6 @@ class _UpdateCardScreenState extends ConsumerState<UpdateCardScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('Update Card'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -172,31 +172,26 @@ class _UpdateCardScreenState extends ConsumerState<UpdateCardScreen> {
               const Spacer(),
 
               // Button at the bottom
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: ElevatedButton(
-                  onPressed: () {
-                    final updatedCard = CardModel(
-                      id: card.id,
-                      title: _titleController.text,
-                      code: _codeController.text,
-                      type: _selectedType.toString(),
-                      coverColor: _selectedColor.toARGB32(),
-                    );
-                    print(updatedCard.toJson());
-
-                    ref
-                        .read(updateCardNotifierProvider)
-                        .updateCard(updatedCard);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Card updated successfully'),
-                      ),
-                    );
-                    GoRouter.of(context).pop();
-                  },
-                  child: const Text('Update Card'),
+              Button(
+                child: const Text(
+                  'Update Card',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                 ),
+                onPressed: () {
+                  final updatedCard = CardModel(
+                    id: card.id,
+                    title: _titleController.text,
+                    code: _codeController.text,
+                    type: _selectedType.toString(),
+                    coverColor: _selectedColor.toARGB32(),
+                  );
+
+                  ref.read(updateCardNotifierProvider).updateCard(updatedCard);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Card updated successfully')),
+                  );
+                  GoRouter.of(context).pop();
+                },
               ),
             ],
           );

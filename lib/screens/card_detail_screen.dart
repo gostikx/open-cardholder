@@ -4,7 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:opencardholder/models/card_model.dart';
 import 'package:opencardholder/providers/database_provider.dart';
 import 'package:opencardholder/screens/error_screen.dart';
-import 'package:opencardholder/widgets/CardDetail.dart';
+import 'package:opencardholder/widgets/button.dart';
+import 'package:opencardholder/widgets/card_detail.dart';
 import 'package:opencardholder/widgets/card_detail/confirm_dialog.dart';
 
 class CardDetailScreen extends ConsumerWidget {
@@ -18,13 +19,9 @@ class CardDetailScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('Card Details'),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            GoRouter.of(context).pop();
-          },
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => GoRouter.of(context).pop(),
         ),
       ),
       body: cardsProvider.when(
@@ -54,10 +51,8 @@ class CardDetailScreen extends ConsumerWidget {
                         loading: () => null,
                         error: (_, __) => null,
                       );
-                  print('deleted card: ${cardToDelete?.toJson()}');
-                  if (cardToDelete != null) {
-                    // _showDeleteConfirmationDialog(context, cardToDelete, ref);
 
+                  if (cardToDelete != null) {
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
@@ -78,43 +73,18 @@ class CardDetailScreen extends ConsumerWidget {
                     );
                   }
                 },
-                style: TextButton.styleFrom(
-                  foregroundColor: Colors.blue, // Цвет ссылки
-                ),
-                child: const Text(
-                  'Delete card',
-                  style: TextStyle(
-                    decoration: TextDecoration.underline, // Подчеркивание
-                  ),
-                ),
+                child: const Text('Удалить карту'),
               ),
 
-              Padding(
-                padding: EdgeInsetsGeometry.only(
-                  top: 0,
-                  right: 16,
-                  left: 16,
-                  bottom: 16,
+              Button(
+                child: const Text(
+                  'Редактировать',
+                  style: TextStyle(fontSize: 18),
                 ),
-                child: ElevatedButton(
-                  onPressed: () {
-                    // Navigate to update card screen
-                    GoRouter.of(context).push('/update-card/$cardId');
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 40,
-                      vertical: 16,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: const Text(
-                    'Редактировать',
-                    style: TextStyle(fontSize: 18),
-                  ),
-                ),
+                onPressed: () {
+                  // Navigate to update card screen
+                  GoRouter.of(context).push('/update-card/$cardId');
+                },
               ),
             ],
           );
