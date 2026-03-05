@@ -13,11 +13,6 @@ final allCardsProvider = StreamProvider<List<CardModel>>((ref) {
   return isar.cardModels.where().sortById().watch(fireImmediately: true);
 });
 
-// final addCardProvider = FutureProvider.autoDispose<void>((ref) async {
-//   // This will be used as a notifier
-//   throw UnimplementedError('Use addCardNotifier instead');
-// });
-
 final addCardNotifierProvider = StateNotifierProvider<AddCardNotifier, AsyncValue<void>>((ref) {
   return AddCardNotifier(ref);
 });
@@ -63,11 +58,6 @@ class AddCardNotifier extends StateNotifier<AsyncValue<void>> {
   }
 }
 
-// final deleteCardProvider = FutureProvider.autoDispose<void>((ref) async {
-//   // This will be used as a notifier
-//   throw UnimplementedError('Use deleteCardNotifier instead');
-// });
-
 final deleteCardNotifierProvider = Provider<DeleteCardNotifier>((ref) {
   return DeleteCardNotifier(ref);
 });
@@ -94,11 +84,6 @@ class DeleteCardNotifier extends StateNotifier<AsyncValue<void>> {
     }
   }
 }
-
-// final updateCardProvider = FutureProvider.autoDispose<void>((ref) async {
-//   // This will be used as a notifier
-//   throw UnimplementedError('Use updateCardNotifier instead');
-// });
 
 final updateCardNotifierProvider = Provider<UpdateCardNotifier>((ref) {
   return UpdateCardNotifier(ref);

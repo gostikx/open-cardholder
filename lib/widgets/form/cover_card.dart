@@ -73,33 +73,36 @@ class _CardCoverState extends State<CardCover> {
                   // open bottomsheet
                   showModalBottomSheet(
                     context: context,
+                    isScrollControlled: true,
                     builder: (BuildContext context) {
-                      return Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(20),
-                        child: Wrap(
-                          alignment: WrapAlignment.center,
-                          children: [
-                            const Text(
-                              'Выберите цвет',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
+                      return SingleChildScrollView(
+                        child: Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(20),
+                          child: Wrap(
+                            alignment: WrapAlignment.center,
+                            children: [
+                              const Text(
+                                'Выберите цвет',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 16, width: double.infinity),
-                            BlockPicker(
-                              pickerColor: coverColor ?? Colors.cyan,
-                              useInShowDialog: false,
-                              onColorChanged: (Color color) {
-                                setState(() {
-                                  widget.onColorChanged(color);
-                                  coverColor = color;
-                                });
-                                Navigator.of(context).pop(color);
-                              },
-                            ),
-                          ],
+                              const SizedBox(height: 16, width: double.infinity),
+                              BlockPicker(
+                                pickerColor: coverColor ?? Colors.cyan,
+                                useInShowDialog: false,
+                                onColorChanged: (Color color) {
+                                  setState(() {
+                                    widget.onColorChanged(color);
+                                    coverColor = color;
+                                  });
+                                  Navigator.of(context).pop(color);
+                                },
+                              ),
+                            ],
+                          ),
                         ),
                       );
                     },

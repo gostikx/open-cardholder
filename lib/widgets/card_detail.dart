@@ -82,9 +82,11 @@ class _CardDetailState extends State<CardDetail> {
               width: MediaQuery.of(context).size.width,
               color: Colors.black.withAlpha(230),
               child: Center(
-                child: GestureDetector(
-                  onTap: () {},
-                  child: _FullScreenCardView(card: widget.card),
+                child: SingleChildScrollView(
+                  child: GestureDetector(
+                    onTap: () {},
+                    child: _FullScreenCardView(card: widget.card),
+                  ),
                 ),
               ),
             ),
